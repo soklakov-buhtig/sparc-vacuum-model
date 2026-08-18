@@ -7,13 +7,13 @@ def get_galaxy_geometry_from_table(galaxy_name):
         
     for line in lines:
         parts = line.strip().split()
-        if len(parts) < 13: 
+        if len(parts) < 13:
             continue
             
-        # 1. Проверяем вторую колонку (parts[1]), где записано имя галактики
-        if parts[1].upper() == search_name:
-            # 2. Считываем тип галактики (3-я колонка, индекс 2)
-            g_type = int(parts[2])
+        # 1. Проверяем первую колонку (parts[0]), где записано имя галактики
+        if parts[0].upper() == search_name:
+            # 2. Считываем тип галактики (2-я колонка, индекс 1)
+            g_type = int(parts[1])
             
             # 3. Точный масштабный радиус диска Rdisk (12-я колонка, индекс 11)
             r_disk = float(parts[11])
