@@ -14,11 +14,7 @@ def get_combined_knudsen(lambda_0, R, M_bar, z0_profile, M_bh=0.0):
     M_total = M_bar + (M_bh / np.maximum(R, 1e-3))
     return lambda_0 / np.maximum(R * M_total * z0_profile, 1e-4)
 
-def model_velocity_knudsen(params, R, Vbar, M_bar, R_d, z_c, M_bh, alpha, Kn_crit, g_name):
-    # Если это IC 2574, упругость отключена изначально (полная сверхтекучесть)
-    if g_name == "IC 2574":
-        return Vbar
-        
+def model_velocity_knudsen(params, R, Vbar, M_bar, R_d, z_c, M_bh, alpha):
     k_shear, lambda_0 = params
     a0_base = 3600.0 * k_shear
     G_CONST = 4.30091e-6  # kpc * (km/s)^2 / M_sun
@@ -26,15 +22,15 @@ def model_velocity_knudsen(params, R, Vbar, M_bar, R_d, z_c, M_bh, alpha, Kn_cri
     a_newton = (Vbar**2 / R) + a_bh
     z0_profile = z_c * (1.0 + (R / R_d)**2)
     
-    # Считаем профиль Кнудсена
+    # Расчет локального числа Кнудсена
     Kn = get_combined_knudsen(lambda_0, R, M_bar, z0_profile, M_bh)
     
-    # ФАЗОВЫЙ ФИЛЬТР: упругое ускорение a_eff включается ТОЛЬКО там, где Kn <= Kn_crit
-    a_eff = (a0_base / (1.0 + Kn)) * (1.0 / np.maximum(Kn, 1e-6)**alpha)
-    a_eff = np.where(Kn <= Kn_crit, a_eff, 0.0)
+    # АНАЛИТИЧЕСКИЙ ПЕРЕХОД: упругость плавно затухает в центр через экспоненту np.exp(-Kn)
+    a_eff = (a0_base / (1.0 + Kn)) * (1.0 / np.maximum(Kn, 1e-6)**alpha) * np.exp(-Kn)
     
     a_total = (a_newton + np.sqrt(a_newton**2 + 4 * a_newton * a_eff)) / 2
     return np.sqrt(a_total * R)
+
 
 # --- 2. ИСТИННЫЕ ДАННЫЕ ИЗ КАТАЛОГА SPARC ---
 def get_exact_sparc_data(galaxy_name):
@@ -119,7 +115,7 @@ def loss_function(k_shear_val):
     k_scalar = float(k_shear_val[0])
     if k_scalar < 1e-5: return 1e10
     # Пробрасываем Kn_crit в оптимизатор, чтобы калибровка учитывала границу сред!
-    V_pred = model_velocity_knudsen([k_scalar, lambda_0_fixed], R_cal, Vbar_cal, M_cal, Rd_cal, zc_cal, Mbh_cal, alpha, Kn_crit, calibration_galaxy)
+    V_pred = model_velocity_knudsen([k_scalar, lambda_0_fixed], R_cal, Vbar_cal, M_cal, Rd_cal, zc_cal, Mbh_cal, alpha)
     return np.sum((Vobs_cal - V_pred) ** 2)
 
 res = minimize(loss_function, [1.0], method='Nelder-Mead')
@@ -140,7 +136,7 @@ for row_idx in range(3):
         
         R, Vobs, Vbar, M_bar, R_d, z_c, M_bh = get_exact_sparc_data(g_name)
         # Рассчитываем скорость с учетом динамического фазового фильтра Kn_crit
-        V_mod = model_velocity_knudsen(final_params, R, Vbar, M_bar, R_d, z_c, M_bh, alpha, Kn_crit, g_name)
+        V_mod = model_velocity_knudsen(final_params, R, Vbar, M_bar, R_d, z_c, M_bh, alpha)
         
         z0_profile = z_c * (1.0 + (R / R_d)**2)
         Kn_profile_bh = get_combined_knudsen(lambda_0_fixed, R, M_bar, z0_profile, M_bh)
