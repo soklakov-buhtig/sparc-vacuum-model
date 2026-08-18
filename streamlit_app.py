@@ -88,10 +88,19 @@ lambda_0_fixed = st.sidebar.slider(
     min_value=0.01, max_value=0.20, value=0.05, step=0.01
 )
 
-Kn_crit = st.sidebar.slider(
-    "Критерий перехода сред (Kn_crit):", 
-    min_value=1e-6, max_value=1e-1, value=1e-5, step=1e-6, format="%.6f"
+# Логарифмический ползунок: управляем степенью от -6 до -1
+Kn_crit_exp = st.sidebar.slider(
+    "Критерий перехода сред (lg Kn_crit):", 
+    min_value=-6.0, max_value=-1.0, value=-5.0, step=0.1,
+    format="%.1f"
 )
+# Возводим 10 в выбранную степень для расчетов в модели
+Kn_crit = 10**Kn_crit_exp
+
+# Выводим текущее точное значение для удобства
+st.sidebar.caption(f"Текущее значение Kn_crit: **{Kn_crit:.7f}**")
+st.sidebar.caption("При достижении Kn <= Kn_crit вакуум переходит из ламинарного течения в упругую сетку.")
+
 
 st.sidebar.caption("Ползунки управляют структурой вакуума одновременно для всей выборки из 6 галактик.")
 
