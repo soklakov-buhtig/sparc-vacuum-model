@@ -105,7 +105,7 @@ st.sidebar.caption("При достижении Kn <= Kn_crit вакуум пе�
 R_cal, Vobs_cal, Vbar_cal, M_cal, Rd_cal, zc_cal, Mbh_cal = get_exact_sparc_data("NGC 2903")
 
 def loss_function(k_shear_val):
-k_scalar = float(k_shear_val[0])
+    k_scalar = float(k_shear_val[0])
     if k_scalar < 1e-5: 
         return 1e10
     # Вычисляем квадратичное отклонение модели от наблюдений с текущим alpha и lambda_0
