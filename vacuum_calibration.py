@@ -11,9 +11,10 @@ def calibrate_vacuum_parameters(R_cal, Vobs_cal, Vbar_cal, M_cal, Rd_cal, zc_cal
             
         # Строго соблюдаем порядок аргументов физического движка: params, R, Vbar, M_bar...
         V_pred = model_velocity_knudsen(
-            [k_scalar, lambda_0_fixed], 
-            R_cal, Vbar_cal, M_cal, Rd_cal, zc_cal, Mbh_cal, alpha
+            [k_scalar, lambda_0_fixed],             
+            R_cal, Vobs_cal, Vbar_cal, M_cal, Rd_cal, zc_cal, Mbh_cal, alpha
         )
+
         return np.sum((Vobs_cal - V_pred) ** 2)
 
     # Проводим оптимизацию Nelder-Mead по реальным точкам Vobs_cal
