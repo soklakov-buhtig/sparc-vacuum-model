@@ -36,7 +36,16 @@ def model_velocity_knudsen(params, R, Vbar, M_bar, R_d, z_c, M_bh, alpha):
 # --- 2. ИСТИННЫЕ ДАННЫЕ ИЗ КАТАЛОГА SPARC ---
 def get_exact_sparc_data(galaxy_name):
     g = SPARC_DATABASE[galaxy_name]
-    return g["R"], g["Vobs"], g["Vbar"], g["M_bar"], g["R_d"], g["z_c"], g["M_bh"]
+    
+    # Считаем суммарный барионный профиль скорости по Ньютону из чистых компонентов
+    vbar = np.sqrt(g["Vgas"]**2 + 0.5 * g["Vdisk"]**2)
+    
+    # Считаем эталонный профиль барионной массы
+    G_const = 4.30091e-6
+    m_bar = (vbar**2) * (g["R"] * 1000) / G_const / 1e9
+    m_bar = np.maximum(m_bar, 1e-3) # Защита центра от нуля
+    
+    return g["R"], g["Vobs"], vbar, m_bar, g["R_d"], g["z_c"], g["M_bh"]
 
 
 # --- 3. ИНТЕРАКТИВНАЯ БОКОВАЯ ПАНЕЛЬ УПРАВЛЕНИЯ ---
