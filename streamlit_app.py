@@ -87,9 +87,9 @@ st.sidebar.subheader("📈 Результаты калибровки:")
 st.sidebar.code(f"k_shear: {k_shear_calibrated:.6f}\nlambda_0: {lambda_0_fixed:.6f}")
 
 # --- 5. МАТРИЧНЫЙ ВЫВОД ВСЕХ 6 ГАЛАКТИК ---
-galaxies_list = ["NGC 3198", "NGC 2403", "NGC 7331", "NGC 2903", "IC 2574", "NGC 2841"]
+galaxies_list = list(SPARC_DATABASE.keys())
 
-for row_idx in range(3):
+for row_idx in range(int(np.ceil(len(galaxies_list) / 2))):
     col1, col2 = st.columns(2)
     
     for col_idx, current_col in enumerate([col1, col2]):
