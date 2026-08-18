@@ -147,7 +147,7 @@ for row_idx in range(3):
         
         idx_exact = np.where(Kn_dense_bh <= Kn_crit)
         is_fully_superfluid = (idx_exact[0].size == 0) or (g_name == "IC 2574")
-        R_transition = float(R_dense[idx_exact]) if not is_fully_superfluid else 0.0
+        R_transition = float(R_dense[idx_exact[0]]) if not is_fully_superfluid else 0.0
         mape = np.mean(np.abs((Vobs - V_mod) / Vobs)) * 100
         
         with current_col:
