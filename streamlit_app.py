@@ -114,7 +114,7 @@ def loss_function(k_shear_val):
 
 # Минимизация методом Нелдера-Мида (симплекс-метод)
 res = minimize(loss_function, [1.0], method='Nelder-Mead')
-k_shear_calibrated = float(res.x)
+k_shear_calibrated = float(res.x[0])
 final_params = [k_shear_calibrated, lambda_0_fixed]
 
 # Отображаем текущие параметры калибровки в интерфейсе
