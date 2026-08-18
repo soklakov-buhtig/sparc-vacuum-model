@@ -19,8 +19,8 @@ def read_galaxy_from_zip(archive_path, galaxy_name):
             
         r_list.append(float(parts[0]))
         vobs_list.append(float(parts[1]))
-        vgas_list.append(float(parts[2]))
-        vdisk_list.append(float(parts[3]))
+        vgas_list.append(float(parts[3]))
+        vdisk_list.append(float(parts[4]))
         
     return np.array(r_list), np.array(vobs_list), np.array(vgas_list), np.array(vdisk_list)
 
