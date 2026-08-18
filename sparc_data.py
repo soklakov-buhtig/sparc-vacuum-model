@@ -69,16 +69,14 @@ for g_name in target_galaxies:
         r_disk, z_c, m_bh = get_galaxy_geometry_from_table(g_name)
         
         r, vobs, vgas, vdisk = read_galaxy_from_zip(ARCHIVE_PATH, g_name)
-        vbar = np.sqrt(vgas**2 + 0.5 * vdisk**2)
         
-        G_const = 4.30091e-6
-        m_bar = (vbar**2) * (r * 1000) / G_const / 1e9
+        vbar = np.sqrt(vgas**2 + 0.5 * vdisk**2)
         
         SPARC_DATABASE[g_name] = {
             "R": r,
             "Vobs": vobs,
-            "Vbar": vbar,
-            "M_bar": m_bar,
+            "Vgas": vgas,
+            "Vdisk": vdisk,           
             "R_d": r_disk,  # Передаем динамический параметр из таблицы
             "z_c": z_c,     # Передаем динамический параметр
             "M_bh": m_bh
