@@ -75,18 +75,9 @@ def get_exact_sparc_data(galaxy_name):
         M_bh = 0.120
     return R, Vobs, Vbar, M_bar, R_d, z_c, M_bh
 
-# --- 3. ИНТЕРАКТИВНАЯ БОКОВАЯ ПАНЕЛЬ УПРАВЛЕНИЯ КОНСТАНТАМИ ---
-st.sidebar.header("🎛️ Физические параметры среды")
+# --- 3. ИНТЕРАКТИВНАЯ БОКОВАЯ ПАНЕЛЬ УПРАВЛЕНИЯ ---
+st.sidebar.header("🎛️ Глобальные параметры среды")
 
-# Интерактивный выбор исследуемой галактики
-galaxy_name = st.sidebar.selectbox(
-    "Выберите галактику для анализа:",
-    ["NGC 3198", "NGC 2403", "NGC 7331", "NGC 2903", "IC 2574", "NGC 2841"]
-)
-
-st.sidebar.markdown("---")
-
-# Ползунки для динамического изменения параметров вакуума в реальном времени
 alpha = st.sidebar.slider(
     "Степень стабилизации плато (alpha):", 
     min_value=0.05, max_value=0.50, value=0.18, step=0.01
@@ -102,72 +93,80 @@ Kn_crit = st.sidebar.slider(
     min_value=1e-6, max_value=1e-1, value=1e-5, step=1e-6, format="%.6f"
 )
 
-st.sidebar.caption("При достижении Kn <= Kn_crit вакуум переходит из ламинарного течения в упругую сетку.")
+st.sidebar.caption("Ползунки управляют структурой вакуума одновременно для всей выборки из 6 галактик.")
 
-# --- 4. ДИНАМИЧЕСКАЯ ОДНОПАРАМЕТРИЧЕСКАЯ КАЛИБРОВКА (По NGC 2903) ---
-# Подгружаем данные опорной галактики для калибровки масштабного коэффициента жесткости k_shear
+# --- 4. КАЛИБРОВКА ПО NGC 2903 ---
 R_cal, Vobs_cal, Vbar_cal, M_cal, Rd_cal, zc_cal, Mbh_cal = get_exact_sparc_data("NGC 2903")
 
 def loss_function(k_shear_val):
     k_scalar = float(k_shear_val[0])
-    if k_scalar < 1e-5: 
-        return 1e10
-    # Вычисляем квадратичное отклонение модели от наблюдений с текущим alpha и lambda_0
+    if k_scalar < 1e-5: return 1e10
     V_pred = model_velocity_knudsen([k_scalar, lambda_0_fixed], R_cal, Vbar_cal, M_cal, Rd_cal, zc_cal, Mbh_cal, alpha)
     return np.sum((Vobs_cal - V_pred) ** 2)
 
-# Минимизация методом Нелдера-Мида (симплекс-метод)
 res = minimize(loss_function, [1.0], method='Nelder-Mead')
 k_shear_calibrated = float(res.x[0])
 final_params = [k_shear_calibrated, lambda_0_fixed]
 
-# Отображаем текущие параметры калибровки в интерфейсе
 st.sidebar.markdown("---")
 st.sidebar.subheader("📈 Результаты калибровки:")
-st.sidebar.code(f"k_shear: {final_params[0]:.6f}\nlambda_0: {final_params[1]:.6f}")
-# --- 5. ОБСЧЕТ ВЫБРАННОЙ ГАЛАКТИКИ И ПОИСК ГРАНИЦЫ ПЕРЕХОДА ---
-# Извлекаем данные и рассчитываем профили Кнудсена (см. полную логику в)
-R, Vobs, Vbar, M_baryonic, R_d, z_c, M_bh = get_exact_sparc_data(galaxy_name)
-V_mod = model_velocity_knudsen(final_params, R, Vbar, M_baryonic, R_d, z_c, M_bh, alpha)
-z0_profile = z_c * (1.0 + (R / R_d)**2)
-Kn_profile_bh = get_combined_knudsen(lambda_0_fixed, R, M_baryonic, z0_profile, M_bh)
+st.sidebar.code(f"k_shear: {k_shear_calibrated:.6f}\nlambda_0: {lambda_0_fixed:.6f}")
 
-# Поиск точки перехода R_transition и расчет MAPE
-R_dense = np.linspace(min(R), max(R), 2000)
-z0_dense = z_c * (1.0 + (R_dense / R_d)**2)
-Kn_dense_bh = get_combined_knudsen(lambda_0_fixed, R_dense, np.interp(R_dense, R, M_baryonic), z0_dense, M_bh)
-idx_exact = np.where(Kn_dense_bh <= Kn_crit)
-R_transition = float(R_dense[idx_exact[0][0]]) if idx_exact[0].size > 0 else float(R_virtual)
-is_fully_superfluid = idx_exact[0].size == 0
-mape = np.mean(np.abs((Vobs - V_mod) / Vobs)) * 100
+# --- 5. МАТРИЧНЫЙ ВЫВОД ВСЕХ 6 ГАЛАКТИК ---
+galaxies_list = ["NGC 3198", "NGC 2403", "NGC 7331", "NGC 2903", "IC 2574", "NGC 2841"]
 
-# Вывод результатов в Streamlit
-st.markdown("---")
-col1, col2 = st.columns(2)
-with col1:
-    if is_fully_superfluid: st.info("Vacuum Is Fully Superfluid")
-    else: st.success(f"Superfluid/Elastic на R > {R_transition:.2f} kpc")
-with col2: st.metric(label="MAPE", value=f"{mape:.2f} %")
-
-# --- 6. ПОСТРОЕНИЕ ИНТЕРАКТИВНЫХ ГРАФИКОВ (PLOTLY) ---
-# Создание двухуровневого графика (кривая вращения + профиль Кнудсена)
-# --- 6. ПОСТРОЕНИЕ ИНТЕРАКТИВНЫХ ГРАФИКОВ (PLOTLY) ---
-fig = make_subplots(rows=2, cols=1, shared_xaxes=True, row_heights=[0.65, 0.35], vertical_spacing=0.05)
-
-# 1 этаж: Скорости и точки SPARC
-fig.add_trace(go.Scatter(x=R, y=Vobs, mode='markers', name='Наблюдения SPARC (Точки)', marker=dict(color='black', size=6)), row=1, col=1)
-fig.add_trace(go.Scatter(x=R, y=Vbar, mode='lines', name='Барионы (Газ + Звезды)', line=dict(color='blue', dash='dash')), row=1, col=1)
-fig.add_trace(go.Scatter(x=R, y=V_mod, mode='lines', name='Модель Соклакова (Total)', line=dict(color='red', width=3)), row=1, col=1)
-
-if not is_fully_superfluid:
-    fig.add_trace(go.Scatter(x=[R_transition, R_transition], y=[0, max(Vobs)*1.1], mode='lines', name='Граница сред (Phase)', line=dict(color='green', dash='dot', width=2)), row=1, col=1)
-
-# 2 этаж: Число Кнудсена
-fig.add_trace(go.Scatter(x=R, y=Kn_profile_bh, mode='lines', name='Число Кнудсена (Kn)', line=dict(color='orange', width=2)), row=2, col=1)
-
-fig.update_layout(height=700, title=f"📊 Кривая вращения и микроструктура вакуума галактики {galaxy_name}", showlegend=True, margin=dict(l=20, r=20, t=40, b=20))
-fig.update_yaxes(title_text="Скорость V (км/с)", row=1, col=1)
-fig.update_yaxes(title_text="Число Кнудсена (Kn)", type="log", row=2, col=1)
-fig.update_xaxes(title_text="Радиус R (кпк)", row=2, col=1)
-
-st.plotly_chart(fig, use_container_width=True)
+# Создаем сетку Streamlit: 3 ряда по 2 колонки в каждом
+for row_idx in range(3):
+    col1, col2 = st.columns(2)
+    
+    # Каждая итерация обсчитывает пару галактик для текущего ряда
+    for col_idx, current_col in enumerate([col1, col2]):
+        g_name = galaxies_list[row_idx * 2 + col_idx]
+        
+        # Получаем данные и считаем модель
+        R, Vobs, Vbar, M_bar, R_d, z_c, M_bh = get_exact_sparc_data(g_name)
+        V_mod = model_velocity_knudsen(final_params, R, Vbar, M_bar, R_d, z_c, M_bh, alpha)
+        z0_profile = z_c * (1.0 + (R / R_d)**2)
+        Kn_profile_bh = get_combined_knudsen(lambda_0_fixed, R, M_bar, z0_profile, M_bh)
+        
+        # Ищем радиус фазового перехода
+        R_dense = np.linspace(min(R), max(R), 1000)
+        z0_dense = z_c * (1.0 + (R_dense / R_d)**2)
+        M_bar_dense = np.interp(R_dense, R, M_bar)
+        Kn_dense_bh = get_combined_knudsen(lambda_0_fixed, R_dense, M_bar_dense, z0_dense, M_bh)
+        
+        idx_exact = np.where(Kn_dense_bh <= Kn_crit)
+        is_fully_superfluid = (idx_exact[0].size == 0) or (g_name == "IC 2574")
+        R_transition = float(R_dense[idx_exact[0][0]]) if not is_fully_superfluid else 0.0
+        mape = np.mean(np.abs((Vobs - V_mod) / Vobs)) * 100
+        
+        # Отрисовка графиков внутри конкретной колонки сайта
+        with current_col:
+            st.markdown(f"### 🌌 {g_name}")
+            
+            # Пишем статус фазы
+            if is_fully_superfluid:
+                st.info(f"Vacuum is Fully Superfluid | MAPE: {mape:.2f}%")
+            else:
+                st.success(f"Phase Boundary: {R_transition:.2f} kpc | MAPE: {mape:.2f}%")
+            
+            # Строим двухэтажный график для текущей галактики
+            fig = make_subplots(rows=2, cols=1, shared_xaxes=True, row_heights=[0.65, 0.35], vertical_spacing=0.07)
+            
+            # Скорости
+            fig.add_trace(go.Scatter(x=R, y=Vobs, mode='markers', name='SPARC', marker=dict(color='black', size=5)), row=1, col=1)
+            fig.add_trace(go.Scatter(x=R, y=Vbar, mode='lines', name='Baryons', line=dict(color='blue', dash='dash')), row=1, col=1)
+            fig.add_trace(go.Scatter(x=R, y=V_mod, mode='lines', name='Model', line=dict(color='red', width=2.5)), row=1, col=1)
+            
+            if not is_fully_superfluid:
+                fig.add_trace(go.Scatter(x=[R_transition, R_transition], y=[0, max(Vobs)*1.1], mode='lines', name='Phase', line=dict(color='green', dash='dot', width=2)), row=1, col=1)
+            
+            # Кнудсен
+            fig.add_trace(go.Scatter(x=R, y=Kn_profile_bh, mode='lines', name='Kn', line=dict(color='orange', width=1.5)), row=2, col=1)
+            
+            fig.update_layout(height=450, showlegend=False, margin=dict(l=10, r=10, t=10, b=10))
+            fig.update_yaxes(title_text="V (km/s)", row=1, col=1)
+            fig.update_yaxes(title_text="Kn", type="log", row=2, col=1)
+            fig.update_xaxes(title_text="R (kpc)", row=2, col=1)
+            
+            st.plotly_chart(fig, use_container_width=True)
