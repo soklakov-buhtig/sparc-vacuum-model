@@ -151,14 +151,23 @@ with col2: st.metric(label="MAPE", value=f"{mape:.2f} %")
 
 # --- 6. ПОСТРОЕНИЕ ИНТЕРАКТИВНЫХ ГРАФИКОВ (PLOTLY) ---
 # Создание двухуровневого графика (кривая вращения + профиль Кнудсена)
-fig = make_subplots(rows=2, cols=1, shared_xaxes=True, row_heights=[0.65, 0.35], specs=[[{"secondary_y": False}], [{"secondary_y": True}]])
+# --- 6. ПОСТРОЕНИЕ ИНТЕРАКТИВНЫХ ГРАФИКОВ (PLOTLY) ---
+fig = make_subplots(rows=2, cols=1, shared_xaxes=True, row_heights=[0.65, 0.35], vertical_spacing=0.05)
 
-# Добавление графиков: SPARC, Модель, Граница, Кнудсен (детальный код в)
-fig.add_trace(go.Scatter(x=R, y=Vobs, mode='markers', name='SPARC'), row=1, col=1)
-fig.add_trace(go.Scatter(x=R, y=V_mod, mode='lines', name='Model'), row=1, col=1)
-if not is_fully_superfluid: fig.add_trace(go.Scatter(x=[R_transition, R_transition], y=[0, max(Vobs)], name='Phase'), row=1, col=1)
-fig.add_trace(go.Scatter(x=R, y=Kn_profile_bh, name='Kn with BH'), row=2, col=1, secondary_y=True)
+# 1 этаж: Скорости и точки SPARC
+fig.add_trace(go.Scatter(x=R, y=Vobs, mode='markers', name='Наблюдения SPARC (Точки)', marker=dict(color='black', size=6)), row=1, col=1)
+fig.add_trace(go.Scatter(x=R, y=Vbar, mode='lines', name='Барионы (Газ + Звезды)', line=dict(color='blue', dash='dash')), row=1, col=1)
+fig.add_trace(go.Scatter(x=R, y=V_mod, mode='lines', name='Модель Соклакова (Total)', line=dict(color='red', width=3)), row=1, col=1)
 
-fig.update_layout(height=750, title="Анализ SPARC")
+if not is_fully_superfluid:
+    fig.add_trace(go.Scatter(x=[R_transition, R_transition], y=[0, max(Vobs)*1.1], mode='lines', name='Граница сред (Phase)', line=dict(color='green', dash='dot', width=2)), row=1, col=1)
+
+# 2 этаж: Число Кнудсена
+fig.add_trace(go.Scatter(x=R, y=Kn_profile_bh, mode='lines', name='Число Кнудсена (Kn)', line=dict(color='orange', width=2)), row=2, col=1)
+
+fig.update_layout(height=700, showlegend=True, margin=dict(l=20, r=20, t=40, b=20))
+fig.update_yaxes(title_text="Скорость V (км/с)", row=1, col=1)
+fig.update_yaxes(title_text="Число Кнудсена (Kn)", type="log", row=2, col=1)
+fig.update_xaxes(title_text="Радиус R (кпк)", row=2, col=1)
+
 st.plotly_chart(fig, use_container_width=True)
-st.markdown("---")
