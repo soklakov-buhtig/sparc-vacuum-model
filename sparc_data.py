@@ -61,7 +61,7 @@ SPARC_DATABASE = {}
 
 
 # Список галактик, которые мы хотим собрать из zip-архива
-target_galaxies = ["NGC 3198", "NGC 2403", "NGC 7331", "NGC 2903", "IC 2574", "NGC 2841"]
+target_galaxies = ["NGC 3198", "NGC 2403", "NGC 7331", "NGC 2903", "IC 2574", "NGC 2841", "NGC 3992", "NGC 5055", "NGC 5033", "NGC 4157", "NGC 3877", "NGC 3521"]
 
 for g_name in target_galaxies:
     try:
