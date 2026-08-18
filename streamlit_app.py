@@ -110,14 +110,14 @@ calibration_galaxy = st.sidebar.selectbox(
 R_cal, Vobs_cal, Vbar_cal, M_cal, Rd_cal, zc_cal, Mbh_cal = get_exact_sparc_data(calibration_galaxy)
 
 def loss_function(k_shear_val):
-    k_scalar = float(k_shear_val)
+    k_scalar = float(k_shear_val[0])
     if k_scalar < 1e-5: return 1e10
     V_pred = model_velocity_knudsen([k_scalar, lambda_0_fixed], R_cal, Vbar_cal, M_cal, Rd_cal, zc_cal, Mbh_cal, alpha)
     return np.sum((Vobs_cal - V_pred) ** 2)
 
 # Оптимизация Нелдера-Мида под выбранную галактику
 res = minimize(loss_function, [1.0], method='Nelder-Mead')
-k_shear_calibrated = float(res.x)
+k_shear_calibrated = float(res.x[0])
 final_params = [k_shear_calibrated, lambda_0_fixed]
 
 st.sidebar.subheader("📈 Результаты калибровки:")
