@@ -165,7 +165,7 @@ if not is_fully_superfluid:
 # 2 этаж: Число Кнудсена
 fig.add_trace(go.Scatter(x=R, y=Kn_profile_bh, mode='lines', name='Число Кнудсена (Kn)', line=dict(color='orange', width=2)), row=2, col=1)
 
-fig.update_layout(height=700, showlegend=True, margin=dict(l=20, r=20, t=40, b=20))
+fig.update_layout(height=700, title=f"📊 Кривая вращения и микроструктура вакуума галактики {galaxy_name}", showlegend=True, margin=dict(l=20, r=20, t=40, b=20))
 fig.update_yaxes(title_text="Скорость V (км/с)", row=1, col=1)
 fig.update_yaxes(title_text="Число Кнудсена (Kn)", type="log", row=2, col=1)
 fig.update_xaxes(title_text="Радиус R (кпк)", row=2, col=1)
