@@ -95,35 +95,45 @@ Kn_crit = st.sidebar.slider(
 
 st.sidebar.caption("Ползунки управляют структурой вакуума одновременно для всей выборки из 6 галактик.")
 
-# --- 4. КАЛИБРОВКА ПО NGC 2903 ---
-R_cal, Vobs_cal, Vbar_cal, M_cal, Rd_cal, zc_cal, Mbh_cal = get_exact_sparc_data("NGC 2903")
+# --- 4. ДИНАМИЧЕСКИЙ ВЫБОР ГАЛАКТИКИ ДЛЯ КАЛИБРОВКИ ---
+st.sidebar.markdown("---")
+st.sidebar.subheader("🎯 Настройка калибровки")
+
+# Выпадающий список для выбора опорной галактики
+calibration_galaxy = st.sidebar.selectbox(
+    "Опорная галактика для калибровки:",
+    ["NGC 2903", "NGC 3198", "NGC 2403", "NGC 7331", "IC 2574", "NGC 2841"],
+    index=0  # По умолчанию оставляем вашу эталонную NGC 2903
+)
+
+# Загружаем данные динамически выбранной галактики для оптимизатора
+R_cal, Vobs_cal, Vbar_cal, M_cal, Rd_cal, zc_cal, Mbh_cal = get_exact_sparc_data(calibration_galaxy)
 
 def loss_function(k_shear_val):
-    k_scalar = float(k_shear_val[0])
+    k_scalar = float(k_shear_val)
     if k_scalar < 1e-5: return 1e10
     V_pred = model_velocity_knudsen([k_scalar, lambda_0_fixed], R_cal, Vbar_cal, M_cal, Rd_cal, zc_cal, Mbh_cal, alpha)
     return np.sum((Vobs_cal - V_pred) ** 2)
 
+# Оптимизация Нелдера-Мида под выбранную галактику
 res = minimize(loss_function, [1.0], method='Nelder-Mead')
-k_shear_calibrated = float(res.x[0])
+k_shear_calibrated = float(res.x)
 final_params = [k_shear_calibrated, lambda_0_fixed]
 
-st.sidebar.markdown("---")
 st.sidebar.subheader("📈 Результаты калибровки:")
 st.sidebar.code(f"k_shear: {k_shear_calibrated:.6f}\nlambda_0: {lambda_0_fixed:.6f}")
 
 # --- 5. МАТРИЧНЫЙ ВЫВОД ВСЕХ 6 ГАЛАКТИК ---
 galaxies_list = ["NGC 3198", "NGC 2403", "NGC 7331", "NGC 2903", "IC 2574", "NGC 2841"]
 
-# Создаем сетку Streamlit: 3 ряда по 2 колонки в каждом
+# Создаем сетку Streamlit: 3 ряда по 2 колонки
 for row_idx in range(3):
     col1, col2 = st.columns(2)
     
-    # Каждая итерация обсчитывает пару галактик для текущего ряда
     for col_idx, current_col in enumerate([col1, col2]):
         g_name = galaxies_list[row_idx * 2 + col_idx]
         
-        # Получаем данные и считаем модель
+        # Получаем данные и считаем модель на основе глобальных откалиброванных параметров
         R, Vobs, Vbar, M_bar, R_d, z_c, M_bh = get_exact_sparc_data(g_name)
         V_mod = model_velocity_knudsen(final_params, R, Vbar, M_bar, R_d, z_c, M_bh, alpha)
         z0_profile = z_c * (1.0 + (R / R_d)**2)
@@ -136,24 +146,27 @@ for row_idx in range(3):
         Kn_dense_bh = get_combined_knudsen(lambda_0_fixed, R_dense, M_bar_dense, z0_dense, M_bh)
         
         idx_exact = np.where(Kn_dense_bh <= Kn_crit)
-        is_fully_superfluid = (idx_exact[0].size == 0) or (g_name == "IC 2574")
-        R_transition = float(R_dense[idx_exact[0][0]]) if not is_fully_superfluid else 0.0
+        is_fully_superfluid = (idx_exact.size == 0) or (g_name == "IC 2574")
+        R_transition = float(R_dense[idx_exact]) if not is_fully_superfluid else 0.0
         mape = np.mean(np.abs((Vobs - V_mod) / Vobs)) * 100
         
-        # Отрисовка графиков внутри конкретной колонки сайта
         with current_col:
-            st.markdown(f"### 🌌 {g_name}")
+            # Если текущая галактика является калибровочной, добавляем золотую метку в заголовок
+            if g_name == calibration_galaxy:
+                st.markdown(f"### 🌌 {g_name} 👑 <span style='color:#FFD700; font-size:14px; font-weight:bold;'>[ ОПОРНАЯ ГАЛАКТИКА КАЛИБРОВКИ ]</span>", unsafe_allow_html=True)
+            else:
+                st.markdown(f"### 🌌 {g_name}")
             
-            # Пишем статус фазы
+            # Статус фазы и погрешность
             if is_fully_superfluid:
                 st.info(f"Vacuum is Fully Superfluid | MAPE: {mape:.2f}%")
             else:
                 st.success(f"Phase Boundary: {R_transition:.2f} kpc | MAPE: {mape:.2f}%")
             
-            # Строим двухэтажный график для текущей галактики
+            # Двухэтажный график Plotly
             fig = make_subplots(rows=2, cols=1, shared_xaxes=True, row_heights=[0.65, 0.35], vertical_spacing=0.07)
             
-            # Скорости
+            # Ярко-желтые точки SPARC (размер 6)
             fig.add_trace(go.Scatter(x=R, y=Vobs, mode='markers', name='SPARC', marker=dict(color='yellow', size=6)), row=1, col=1)
             fig.add_trace(go.Scatter(x=R, y=Vbar, mode='lines', name='Baryons', line=dict(color='blue', dash='dash')), row=1, col=1)
             fig.add_trace(go.Scatter(x=R, y=V_mod, mode='lines', name='Model', line=dict(color='red', width=2.5)), row=1, col=1)
