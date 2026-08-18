@@ -101,8 +101,9 @@ galaxies_list = list(SPARC_DATABASE.keys())
 
 for row_idx in range(int(np.ceil(len(galaxies_list) / 2))):
     col1, col2 = st.columns(2)
-    
     for col_idx, current_col in enumerate([col1, col2]):
+        if (row_idx * 2 + col_idx) >= len(galaxies_list):
+            break
         g_name = galaxies_list[row_idx * 2 + col_idx]
         
         R, Vobs, Vbar, M_bar, R_d, z_c, M_bh = get_exact_sparc_data(g_name)
