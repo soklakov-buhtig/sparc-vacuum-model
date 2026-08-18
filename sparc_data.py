@@ -1,5 +1,6 @@
 import zipfile
 import numpy as np
+from sparc_parser import get_galaxy_geometry_from_table
 
 def read_galaxy_from_zip(archive_path, galaxy_name):
     # Точное имя файла внутри архива, как мы увидели в проводнике
@@ -23,39 +24,6 @@ def read_galaxy_from_zip(archive_path, galaxy_name):
         vdisk_list.append(float(parts[4]))
         
     return np.array(r_list), np.array(vobs_list), np.array(vgas_list), np.array(vdisk_list)
-
-def get_galaxy_geometry_from_table(galaxy_name):
-    search_name = galaxy_name.replace(' ', '')
-    
-    with open("sparc_to_correct.py", "r", encoding="utf-8") as f:
-        lines = f.readlines()
-        
-    for line in lines:
-        parts = line.strip().split()
-        if not parts:
-            continue
-            
-        if parts[0] == search_name:
-            # 1. Считываем тип галактики (2-я колонка в таблице)
-            g_type = int(parts[1])
-            
-            # 2. Точный масштабный радиус диска Rdisk (12-я колонка, индекс 11)
-            r_disk = float(parts[11])
-            
-            # 3. Физический расчет полутолщины z_c в зависимости от морфологии
-            if g_type >= 9:  # Карликовые неправильные системы (Dwarf Irr)
-                z_c = r_disk * 0.25  # Диск у карликов значительно толще
-            elif g_type <= 3:  # Ранние спирали с балджем
-                z_c = r_disk * 0.08  # Тонкие плотные диски
-            else:
-                z_c = r_disk * 0.12  # Стандартные спирали
-                
-            # 4. Начальное приближение черной дыры
-            m_bh = 0.001 if "3198" in search_name else 0.0001
-            
-            return r_disk, z_c, m_bh
-            
-    return 4.0, 0.35, 0.001
 
 
 
