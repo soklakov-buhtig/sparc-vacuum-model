@@ -1,7 +1,7 @@
 def get_galaxy_geometry_from_table(galaxy_name):
     # Очистка имени и чтение Table1.mrt (из sparc_to_correct.py)
     search_name = galaxy_name.replace(' ', '')
-    with open("Table1.mrt", "r", encoding="utf-8") as f: #
+    with open("sparc_to_correct.py", "r", encoding="utf-8") as f:
         lines = f.readlines()
         
     for line in lines:
