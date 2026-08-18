@@ -25,10 +25,8 @@ def read_galaxy_from_zip(archive_path, galaxy_name):
     return np.array(r_list), np.array(vobs_list), np.array(vgas_list), np.array(vdisk_list)
 
 def get_galaxy_geometry_from_table(galaxy_name):
-    # Убираем пробелы из имени для точного поиска, как в таблице (например, "NGC3198")
     search_name = galaxy_name.replace(' ', '')
     
-    # Читаем ваш сохраненный файл каталога
     with open("sparc_to_correct.py", "r", encoding="utf-8") as f:
         lines = f.readlines()
         
@@ -37,22 +35,28 @@ def get_galaxy_geometry_from_table(galaxy_name):
         if not parts:
             continue
             
-        # Если строка начинается с имени нашей галактики (например, "NGC3198")
         if parts[0] == search_name:
-            # Согласно структуре Table1.mrt:
-            # parts[11] — это масштабный радиус диска Rdisk (в кпк)
+            # 1. Считываем тип галактики (2-я колонка в таблице)
+            g_type = int(parts[1])
+            
+            # 2. Точный масштабный радиус диска Rdisk (12-я колонка, индекс 11)
             r_disk = float(parts[11])
             
-            # Рассчитаем базовую полутолщину диска z_c (например, 10% от Rdisk)
-            z_c = r_disk * 0.1
-            
-            # Значение массы черной дыры (задаем базовое, так как его нет в Table1)
+            # 3. Физический расчет полутолщины z_c в зависимости от морфологии
+            if g_type >= 9:  # Карликовые неправильные системы (Dwarf Irr)
+                z_c = r_disk * 0.25  # Диск у карликов значительно толще
+            elif g_type <= 3:  # Ранние спирали с балджем
+                z_c = r_disk * 0.08  # Тонкие плотные диски
+            else:
+                z_c = r_disk * 0.12  # Стандартные спирали
+                
+            # 4. Начальное приближение черной дыры
             m_bh = 0.001 if "3198" in search_name else 0.0001
             
             return r_disk, z_c, m_bh
             
-    # Дефолтные значения, если галактика не найдена в таблице
     return 4.0, 0.35, 0.001
+
 
 
 # АВТОМАТИЧЕСКАЯ СБОРКА БАЗЫ ДАННЫХ ИЗ ZIP-АРХИВА НА ЛЕТУ
