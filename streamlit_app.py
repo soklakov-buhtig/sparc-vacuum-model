@@ -130,6 +130,7 @@ Kn_profile_bh = get_combined_knudsen(lambda_0_fixed, R, M_baryonic, z0_profile, 
 
 # Поиск точки перехода R_transition и расчет MAPE
 R_dense = np.linspace(min(R), max(R), 2000)
+z0_dense = z_c * (1.0 + (R_dense / R_d)**2)
 Kn_dense_bh = get_combined_knudsen(lambda_0_fixed, R_dense, np.interp(R_dense, R, M_baryonic), z0_dense, M_bh)
 idx_exact = np.where(Kn_dense_bh <= Kn_crit)
 R_transition = float(R_dense[idx_exact[0][0]]) if idx_exact[0].size > 0 else float(R_virtual)
