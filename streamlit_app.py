@@ -5,6 +5,7 @@ from plotly.subplots import make_subplots
 from scipy.optimize import minimize
 from sparc_data import SPARC_DATABASE
 from vacuum_physics import model_velocity_knudsen, get_combined_knudsen
+from vacuum_calibration import calibrate_vacuum_parameters
 
 # Настройка страницы веб-интерфейса
 st.set_page_config(page_title="SPARC Vacuum Model", layout="wide")
@@ -61,16 +62,9 @@ calibration_galaxy = st.sidebar.selectbox(
 
 R_cal, Vobs_cal, Vbar_cal, M_cal, Rd_cal, zc_cal, Mbh_cal = get_exact_sparc_data(calibration_galaxy)
 
-def loss_function(k_shear_val):
-    k_scalar = float(k_shear_val[0])
-    if k_scalar < 1e-5: return 1e10
-    # Пробрасываем Kn_crit в оптимизатор, чтобы калибровка учитывала границу сред!
-    V_pred = model_velocity_knudsen([k_scalar, lambda_0_fixed], R_cal, Vbar_cal, M_cal, Rd_cal, zc_cal, Mbh_cal, alpha)
-    return np.sum((Vobs_cal - V_pred) ** 2)
-
-res = minimize(loss_function, [1.0], method='Nelder-Mead')
-k_shear_calibrated = float(res.x[0])
+k_shear_calibrated = calibrate_vacuum_parameters(R_cal, Vobs_cal, Vbar_cal, M_cal, Rd_cal, zc_cal, Mbh_cal, alpha, lambda_0_fixed)
 final_params = [k_shear_calibrated, lambda_0_fixed]
+
 
 st.sidebar.subheader("📈 Результаты калибровки:")
 st.sidebar.code(f"k_shear: {k_shear_calibrated:.6f}\nlambda_0: {lambda_0_fixed:.6f}")
