@@ -75,9 +75,10 @@ st.sidebar.subheader("🎯 Настройка калибровки")
 
 calibration_galaxy = st.sidebar.selectbox(
     "Опорная галактика для калибровки:",
-    ["NGC 2903", "NGC 3198", "NGC 2403", "NGC 7331", "IC 2574", "NGC 2841"],
+    list(SPARC_DATABASE.keys()),
     index=0
 )
+
 
 R_cal, Vobs_cal, Vbar_cal, M_cal, Rd_cal, zc_cal, Mbh_cal = get_exact_sparc_data(calibration_galaxy)
 
