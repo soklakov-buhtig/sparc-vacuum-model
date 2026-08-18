@@ -146,7 +146,7 @@ for row_idx in range(3):
         Kn_dense_bh = get_combined_knudsen(lambda_0_fixed, R_dense, M_bar_dense, z0_dense, M_bh)
         
         idx_exact = np.where(Kn_dense_bh <= Kn_crit)
-        is_fully_superfluid = (idx_exact.size == 0) or (g_name == "IC 2574")
+        is_fully_superfluid = (idx_exact[0].size == 0) or (g_name == "IC 2574")
         R_transition = float(R_dense[idx_exact]) if not is_fully_superfluid else 0.0
         mape = np.mean(np.abs((Vobs - V_mod) / Vobs)) * 100
         
