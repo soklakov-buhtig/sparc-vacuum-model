@@ -165,6 +165,7 @@ for row_idx in range(int(np.ceil(len(galaxies_list) / 2))):
             st.plotly_chart(fig, use_container_width=True)
 
 calculate_and_display_group_stats(
-    SPARC_DATABASE, calibration_galaxy, final_params, alpha, 
-    get_exact_sparc_data, model_velocity_knudsen
+    SPARC_DATABASE, calibration_galaxy, final_params, alpha,
+    get_exact_sparc_data, model_velocity_knudsen, calibrate_vacuum_parameters # <-- ДОБАВИЛИ СЮДА
 )
+
