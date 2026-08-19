@@ -18,7 +18,7 @@ def get_combined_knudsen(lambda_0, R, M_bar, z0_profile, M_bh=0.0):
 
 
 def model_velocity_knudsen(params, R, Vbar, M_bar, R_d, z_c, M_bh, alpha):
-    k_shear, lambda_0 = params
+    k_shear, lambda_0, *_ = params
     a0_base = 3600.0 * k_shear
     G_CONST = 4.30091e-6  # kpc * (km/s)^2 / M_sun
     
