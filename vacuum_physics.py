@@ -2,14 +2,15 @@ import numpy as np
 from scipy.ndimage import gaussian_filter1d
 
 def get_combined_knudsen(lambda_0, R, M_bar, z0_profile, M_bh=0.0):
-    # Плотность = Масса / Объем. Объем цилиндра ~ R^2 * z0
-    # Никаких np.gradient, которые зануляются на плато!
+    # Локальный объем цилиндра масштабируется как R**2 * z0_profile.
+    # Это честно учитывает геометрию галактического диска и его расширение.
     rho_physical = M_bar / (2 * np.pi * np.maximum(R, 1e-3)**2 * np.maximum(z0_profile, 1e-3))
     
-    # Оставляем только один крошечный предохранитель от деления на чистый ноль
-    rho_measured = np.maximum(rho_physical, 1e-20) 
+    # Оставляем минимальный предохранитель от деления на ноль в космосе
+    rho_measured = np.maximum(rho_physical, 1e-25)
     
     return lambda_0 / rho_measured
+
 
 
 
