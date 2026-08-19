@@ -158,10 +158,12 @@ for row_idx in range(int(np.ceil(len(galaxies_list) / 2))):
             if not is_fully_superfluid:
                 fig.add_trace(go.Scatter(x=[R_transition, R_transition], y=[0, max(Vobs)*1.1], mode='lines', name='Phase', line=dict(color='green', dash='dot', width=2)), row=1, col=1)
             
-            fig.add_trace(go.Scatter(x=R, y=Kn_profile_bh, mode='lines', name='Kn', line=dict(color='orange', width=1.5)), row=2, col=1)
-            
+
+            fig.add_trace(go.Scatter(x=R, y=Kn_profile_bh, mode='lines', name='Kn', line=dict(color='orange', width=1.5)), row=2, col=1, secondary_y=False)
+
             fig.update_layout(height=450, showlegend=False, margin=dict(l=10, r=10, t=10, b=10))
-            fig.update_yaxes(title_text="V (km/s)", row=1, col=1)
+            fig.update_yaxes(title_text="Kn / M_bar", type="log", row=2, col=1, secondary_y=False)
+
             fig.update_yaxes(title_text="Kn", type="log", row=2, col=1)
 
             # --- НАША НОВАЯ СТРОКА НАСТРОЙКИ ПРАВОЙ ОСИ ДЛЯ ТОЛЩИНЫ ДИСКА ---
