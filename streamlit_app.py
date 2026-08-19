@@ -166,11 +166,11 @@ for row_idx in range(int(np.ceil(len(galaxies_list) / 2))):
 
             # --- НАША НОВАЯ СТРОКА НАСТРОЙКИ ПРАВОЙ ОСИ ДЛЯ ТОЛЩИНЫ ДИСКА ---
 # Локальная привязка и калибровка правой линейной оси y3 для толщины текущей галактики
-            fig.update_layout(yaxis3=dict(title="z0 (kpc)", titlefont=dict(color="violet"), tickfont=dict(color="violet"), side="right", overlaying="y2", anchor="x2"))
-            
-            # Фиолетовый пунктир толщины диска на нижнем этаже
-            fig.add_trace(go.Scatter(x=R, y=z0_profile, mode='lines', name='z0 Profile', line=dict(color='violet', width=1.7, dash='dot')), yaxis='y3')
+            fig.update_yaxes(title_text="z0 (kpc)", titlefont=dict(color="violet"), tickfont=dict(color="violet"), side="right", row=2, col=1)
 
+            # Фиолетовый пунктир толщины диска на нижнем этаже
+            fig.add_trace(go.Scatter(x=R, y=z0_profile, mode='lines', name='z0 Profile', line=dict(color='violet', width=1.7, dash='dot')), row=2, col=1)
+            
             # Яркая голубая линия накопленной барионной массы на нижнем этаже
             fig.add_trace(go.Scatter(x=R, y=accumulated_mass_g, mode='lines', name='M_bar(R)', line=dict(color='cyan', width=2)), row=2, col=1)
 
