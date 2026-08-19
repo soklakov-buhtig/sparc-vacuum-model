@@ -2,23 +2,15 @@ import numpy as np
 from scipy.ndimage import gaussian_filter1d
 
 def get_combined_knudsen(lambda_0, R, M_bar, z0_profile, M_bh=0.0):
-    # Убираем dV2_dR, так как на плато скоростей градиент зануляется и ломает физику.
-    # Вместо этого оцениваем физическую плотность через профиль массы M_bar и объем слоя.
-    # dM_dR покажет распределение массы по радиусу R
-# Внутри get_combined_knudsen:
-    M_bar_smoothed = gaussian_filter1d(M_bar, sigma=1.5)
-    dM_dR = np.gradient(M_bar_smoothed, R)
-    dM_dR = np.maximum(dM_dR, 1e-8) # защита от шума
+    # Плотность = Масса / Объем. Объем цилиндра ~ R^2 * z0
+    # Никаких np.gradient, которые зануляются на плато!
+    rho_physical = M_bar / (2 * np.pi * np.maximum(R, 1e-3)**2 * np.maximum(z0_profile, 1e-3))
     
-    # Локальный объем тонкого цилиндрического слоя: dV = 2 * pi * R * z0_profile * dR
-    # Следовательно, плотность rho = dM / dV = (dM/dR) / (2 * pi * R * z0_profile)
-    rho_physical = dM_dR / (2 * np.pi * np.maximum(R, 1e-3) * np.maximum(z0_profile, 1e-3))
+    # Оставляем только один крошечный предохранитель от деления на чистый ноль
+    rho_measured = np.maximum(rho_physical, 1e-20) 
     
-    # Защитный порог для чистой физики разрежения среды
-    rho_measured = np.maximum(rho_physical, 1e-12)
-    
-    # Теперь Кнудсен будет честно расти на периферии (Kn ~ 1/rho)
     return lambda_0 / rho_measured
+
 
 
 
