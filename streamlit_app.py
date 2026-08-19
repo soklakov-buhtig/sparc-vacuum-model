@@ -165,17 +165,9 @@ for row_idx in range(int(np.ceil(len(galaxies_list) / 2))):
             fig.update_yaxes(title_text="Kn", type="log", row=2, col=1)
 
             # --- НАША НОВАЯ СТРОКА НАСТРОЙКИ ПРАВОЙ ОСИ ДЛЯ ТОЛЩИНЫ ДИСКА ---
-            fig.update_layout(
-                yaxis3=dict(
-                    title="z0 (kpc)",
-                    titlefont=dict(color="violet"),
-                    tickfont=dict(color="violet"),
-                    anchor="x2",      # Привязываем к оси X нижнего этажа
-                    overlaying="y2",  # Накладываем поверх логарифмической оси Kn
-                    side="right",     # Выводим строго на правую сторону карточки
-                    range=[0, max(z0_profile) * 1.2] # Динамический линейный масштаб с запасом
-                )
-            )
+# Локальная привязка и калибровка правой линейной оси y3 для толщины текущей галактики
+            fig.update_yaxes(title_text="z0 (kpc)", titlefont=dict(color="violet"), tickfont=dict(color="violet"), side="right", overlaying="y2", row=2, col=1)
+
             
             # Фиолетовый пунктир толщины диска на нижнем этаже
             fig.add_trace(go.Scatter(x=R, y=z0_profile, mode='lines', name='z0 Profile', line=dict(color='violet', width=1.7, dash='dot')), row=2, col=1)
