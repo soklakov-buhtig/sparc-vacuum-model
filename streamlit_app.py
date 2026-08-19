@@ -149,8 +149,8 @@ for row_idx in range(int(np.ceil(len(galaxies_list) / 2))):
             else:
                 st.success(f"Phase Boundary: {R_transition:.2f} kpc | MAPE: {mape:.2f}%")
             
-            fig = make_subplots(rows=2, cols=1, shared_xaxes=True, row_heights=[0.65, 0.35], vertical_spacing=0.07)
-            
+            fig = make_subplots(rows=2, cols=1, shared_xaxes=True, row_heights=[0.65, 0.35], vertical_spacing=0.07, specs=[[{"secondary_y": False}], [{"secondary_y": True}]])
+
             fig.add_trace(go.Scatter(x=R, y=Vobs, mode='markers', name='SPARC', marker=dict(color='yellow', size=6)), row=1, col=1)
             fig.add_trace(go.Scatter(x=R, y=Vbar, mode='lines', name='Baryons', line=dict(color='blue', dash='dash')), row=1, col=1)
             fig.add_trace(go.Scatter(x=R, y=V_mod, mode='lines', name='Model', line=dict(color='red', width=2.5)), row=1, col=1)
@@ -168,8 +168,8 @@ for row_idx in range(int(np.ceil(len(galaxies_list) / 2))):
 # Локальная привязка и калибровка правой линейной оси y3 для толщины текущей галактики
             fig.update_yaxes(title_text="z0 (kpc)", titlefont=dict(color="violet"), tickfont=dict(color="violet"), side="right", row=2, col=1)
 
-            # Фиолетовый пунктир толщины диска на нижнем этаже
-            fig.add_trace(go.Scatter(x=R, y=z0_profile, mode='lines', name='z0 Profile', line=dict(color='violet', width=1.7, dash='dot')), row=2, col=1)
+        # Направляем фиолетовый пунктир строго на правую независимую ось нижнего подграфика
+            fig.add_trace(go.Scatter(x=R, y=z0_profile, mode='lines', name='z0 Profile', line=dict(color='violet', width=1.7, dash='dot')), row=2, col=1, secondary_y=True)
             
             # Яркая голубая линия накопленной барионной массы на нижнем этаже
             fig.add_trace(go.Scatter(x=R, y=accumulated_mass_g, mode='lines', name='M_bar(R)', line=dict(color='cyan', width=2)), row=2, col=1)
