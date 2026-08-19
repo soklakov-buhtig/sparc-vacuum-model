@@ -78,7 +78,8 @@ calibration_galaxy = st.sidebar.selectbox(
 R_cal, Vobs_cal, Vbar_cal, M_cal, Rd_cal, zc_cal, Mbh_cal = get_exact_sparc_data(calibration_galaxy)
 
 k_shear_calibrated = calibrate_vacuum_parameters(R_cal, Vobs_cal, Vbar_cal, M_cal, Rd_cal, zc_cal, Mbh_cal, alpha, lambda_0_fixed)
-final_params = [k_shear_calibrated, lambda_0_fixed]
+final_params = [k_shear_calibrated, lambda_0_fixed, Kn_crit]
+
 
 
 st.sidebar.subheader("📈 Результаты калибровки:")
