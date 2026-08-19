@@ -20,7 +20,7 @@ def model_velocity_knudsen(params, R, Vbar, M_bar, R_d, z_c, M_bh, alpha):
     a_eff = (a0_base / (1.0 + Kn)) * (1.0 / np.maximum(Kn, 1e-6)**alpha) * np.exp(-Kn)
     a_total = (a_newton + np.sqrt(a_newton**2 + 4 * a_newton * a_eff)) / 2
     
-        V_mod = np.sqrt(a_total * R)
+    V_mod = np.sqrt(a_total * R)
     
     # --- СТРОГОЕ ФАЗОВОЕ ЗАМЕРЗАНИЕ ПО КНУДСЕНУ (ИДЕЯ СОКЛАКОВА) ---
     # Достаем критический Кнудсен динамически, без изменения streamlit_app.py
