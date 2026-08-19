@@ -2,18 +2,14 @@ import numpy as np
 from scipy.ndimage import gaussian_filter1d
 
 def get_combined_knudsen(lambda_0, R, M_bar, z0_profile, M_bh=0.0):
-    # 1. Считаем объемную плотность вещества в диске (первый учет z0_profile)
-    rho_volume = M_bar / (2 * np.pi * np.maximum(R, 1e-3)**2 * np.maximum(z0_profile, 1e-3))
-    rho_volume = np.maximum(rho_volume, 1e-25)
+    # Плотность вещества на единицу площади вертикального торца диска
+    # Площадь торца цилиндра на радиусе R равна 2 * pi * R * z0_profile
+    rho_torus = M_bar / (2 * np.pi * np.maximum(R, 1e-3) * np.maximum(z0_profile, 1e-3))
+    rho_torus = np.maximum(rho_torus, 1e-25)
     
-    # 2. Вычисляем базовый Кнудсен через объемную плотность
-    Kn_base = lambda_0 / rho_volume
-    
-    # 3. Учитываем толщину диска ВТОРОЙ раз — как площадь торца диска (сечение взаимодействия)
-    # Число Кнудсена обратно пропорционально характерному вертикальному масштабу диска
-    Kn_combined = Kn_base / np.maximum(z0_profile, 1e-3)
-    
-    return Kn_combined
+    # Кнудсен через площадь торца
+    return lambda_0 / rho_torus
+
 
 
 
