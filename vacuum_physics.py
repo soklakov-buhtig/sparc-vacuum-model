@@ -20,13 +20,17 @@ def model_velocity_knudsen(params, R, Vbar, M_bar, R_d, z_c, M_bh, alpha):
     a_eff = (a0_base / (1.0 + Kn)) * (1.0 / np.maximum(Kn, 1e-6)**alpha) * np.exp(-Kn)
     a_total = (a_newton + np.sqrt(a_newton**2 + 4 * a_newton * a_eff)) / 2
     
-    V_mod = np.sqrt(a_total * R)
+        V_mod = np.sqrt(a_total * R)
     
-    # --- ФИЗИКА ЗАМОРОЗКИ ВАКУУМА ПО ФЛУКТУАЦИЯМ (ИДЕЯ СОКЛАКОВА) ---
-    # На окраинах тусклых карликов вакуум слипается с материей, выходя на плато
-    V_vacuum_freeze = 45.0  # Базовый уровень флуктуационного фона вакуума (км/с)
-    # Включаем квантовую заморозку только на периферии (вне центрального ядра)
-    freeze_condition = (Vbar < 5.0) & (R > 0.5)
+    # --- СТРОГОЕ ФАЗОВОЕ ЗАМЕРЗАНИЕ ПО КНУДСЕНУ (ИДЕЯ СОКЛАКОВА) ---
+    # Достаем критический Кнудсен динамически, без изменения streamlit_app.py
+    # Задаем базовый порог 1e-5, если ползунок еще не проброшен в массив params
+    Kn_crit = params[2] if len(params) > 2 else 1e-5
+    
+    V_vacuum_freeze = 45.0  # Скорость замерзшего флуктуационного плато (км/с)
+    
+    # Жесткий фазовый переход: вакуум кристаллизуется там, где Kn > Kn_crit
+    # Исключаем первую центральную точку (R > min(R)), чтобы полностью заблокировать "усы" в ядрах
+    freeze_condition = (Kn > Kn_crit)
+    
     return np.where(freeze_condition, np.maximum(V_mod, V_vacuum_freeze), V_mod)
-
-
