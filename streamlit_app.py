@@ -161,3 +161,8 @@ for row_idx in range(int(np.ceil(len(galaxies_list) / 2))):
             fig.update_xaxes(title_text="R (kpc)", row=2, col=1)
             
             st.plotly_chart(fig, use_container_width=True)
+
+calculate_and_display_group_stats(
+    SPARC_DATABASE, calibration_galaxy, final_params, alpha, 
+    get_exact_sparc_data, model_velocity_knudsen
+)
