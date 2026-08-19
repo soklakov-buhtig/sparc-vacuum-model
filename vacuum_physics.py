@@ -1,10 +1,13 @@
 import numpy as np
+from scipy.ndimage import gaussian_filter1d
 
 def get_combined_knudsen(lambda_0, R, M_bar, z0_profile, M_bh=0.0):
     # Убираем dV2_dR, так как на плато скоростей градиент зануляется и ломает физику.
     # Вместо этого оцениваем физическую плотность через профиль массы M_bar и объем слоя.
     # dM_dR покажет распределение массы по радиусу R
-    dM_dR = np.gradient(M_bar, R)
+# Внутри get_combined_knudsen:
+    M_bar_smoothed = gaussian_filter1d(M_bar, sigma=1.5)
+    dM_dR = np.gradient(M_bar_smoothed, R)
     dM_dR = np.maximum(dM_dR, 1e-8) # защита от шума
     
     # Локальный объем тонкого цилиндрического слоя: dV = 2 * pi * R * z0_profile * dR
