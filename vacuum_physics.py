@@ -1,8 +1,25 @@
 import numpy as np
 
 def get_combined_knudsen(lambda_0, R, M_bar, z0_profile, M_bh=0.0):
+    # 1. Считаем полный профиль массы (барионная + вклад ЧД)
     M_total = M_bar + (M_bh / np.maximum(R, 1e-3))
-    return lambda_0 / np.maximum(R * M_total * z0_profile, 1e-4)
+    
+    # 2. Вычисляем дифференциалы (разности) между соседними точками
+    # Дублируем последнюю точку, чтобы сохранить размерность массива (длину R)
+    dR2 = np.diff(R**2, append=R[-1]**2 + 1e-3)
+    dM = np.diff(M_total, append=M_total[-1] + 1e-3)
+    
+    # Защита от отрицательной дифференциальной массы при флуктуациях данных
+    dM = np.maximum(dM, 1e-3)
+    
+    # 3. Локальная плотность в слое: масса делить на объем цилиндрического кольца
+    # (константу pi можно опустить, она уйдет в калибровку lambda_0)
+    rho_local = dM / (dR2 * np.maximum(z0_profile, 1e-3))
+    
+    # 4. Число Кнудсена обратно пропорционально локальной плотности!
+    # В пустоте (rho -> 0) Kn улетает в бесконечность. В ядре (rho -> max) Kn стремится к нулю.
+    return lambda_0 / np.maximum(rho_local, 1e-6)
+
 
 def model_velocity_knudsen(params, R, Vbar, M_bar, R_d, z_c, M_bh, alpha):
     k_shear, lambda_0 = params
