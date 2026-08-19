@@ -69,6 +69,40 @@ final_params = [k_shear_calibrated, lambda_0_fixed]
 st.sidebar.subheader("📈 Результаты калибровки:")
 st.sidebar.code(f"k_shear: {k_shear_calibrated:.6f}\nlambda_0: {lambda_0_fixed:.6f}")
 
+# --- НОВЫЙ БЛОК: РАСЧЕТ ГЛОБАЛЬНОЙ СТАТИСТИКИ MAPE ---
+galaxies_list = list(SPARC_DATABASE.keys())
+all_mapes = []
+
+# Быстрый цикл без отрисовки графиков для сбора всех MAPE
+for g_name in galaxies_list:
+    # Исключаем калибровочную (опорную) галактику по вашему условию
+    if g_name == calibration_galaxy:
+        continue
+        
+    # Извлекаем данные и считаем модель
+    R_g, Vobs_g, Vbar_g, M_bar_g, R_d_g, z_c_g, M_bh_g = get_exact_sparc_data(g_name)
+    V_mod_g = model_velocity_knudsen(final_params, R_g, Vbar_g, M_bar_g, R_d_g, z_c_g, M_bh_g, alpha)
+    
+    # Считаем локальный MAPE
+    mape_g = np.mean(np.abs((Vobs_g - V_mod_g) / Vobs_g)) * 100
+    all_mapes.append(mape_g)
+
+# Выводим статистику в sidebar ниже результатов калибровки
+if len(all_mapes) > 0:
+    st.sidebar.markdown("---")
+    st.sidebar.subheader("📊 Статистика по выборке (174 г.):")
+    
+    mean_mape = np.mean(all_mapes)
+    max_mape = np.max(all_mapes)
+    min_mape = np.min(all_mapes)
+    std_mape = np.std(all_mapes)
+    
+    st.sidebar.metric(label="Среднее значение MAPE", value=f"{mean_mape:.2f}%")
+    st.sidebar.metric(label="Максимальное MAPE", value=f"{max_mape:.2f}%")
+    st.sidebar.metric(label="Минимальное MAPE", value=f"{min_mape:.2f}%")
+    st.sidebar.metric(label="Стандартное отклонение", value=f"{std_mape:.2f}%")
+
+
 # --- 5. МАТРИЧНЫЙ ВЫВОД ВСЕХ 6 ГАЛАКТИК ---
 galaxies_list = list(SPARC_DATABASE.keys())
 
