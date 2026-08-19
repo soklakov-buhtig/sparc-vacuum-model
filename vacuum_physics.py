@@ -20,4 +20,10 @@ def model_velocity_knudsen(params, R, Vbar, M_bar, R_d, z_c, M_bh, alpha):
     a_eff = (a0_base / (1.0 + Kn)) * (1.0 / np.maximum(Kn, 1e-6)**alpha) * np.exp(-Kn)
     a_total = (a_newton + np.sqrt(a_newton**2 + 4 * a_newton * a_eff)) / 2
     
-    return np.sqrt(a_total * R)
+    V_mod = np.sqrt(a_total * R)
+    
+    # --- ФИЗИКА ЗАМОРОЗКИ ВАКУУМА ПО ФЛУКТУАЦИЯМ (ИДЕЯ СОКЛАКОВА) ---
+    # На окраинах тусклых карликов вакуум слипается с материей, выходя на плато
+    V_vacuum_freeze = 45.0  # Базовый уровень флуктуационного фона вакуума (км/с)
+    return np.where(Vbar < 5.0, np.maximum(V_mod, V_vacuum_freeze), V_mod)
+
