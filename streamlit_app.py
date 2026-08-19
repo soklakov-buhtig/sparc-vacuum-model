@@ -163,8 +163,23 @@ for row_idx in range(int(np.ceil(len(galaxies_list) / 2))):
             fig.update_layout(height=450, showlegend=False, margin=dict(l=10, r=10, t=10, b=10))
             fig.update_yaxes(title_text="V (km/s)", row=1, col=1)
             fig.update_yaxes(title_text="Kn", type="log", row=2, col=1)
+
+            # --- НАША НОВАЯ СТРОКА НАСТРОЙКИ ПРАВОЙ ОСИ ДЛЯ ТОЛЩИНЫ ДИСКА ---
+            fig.update_layout(
+                yaxis3=dict(
+                    title="z0 (kpc)",
+                    titlefont=dict(color="violet"),
+                    tickfont=dict(color="violet"),
+                    anchor="x2",      # Привязываем к оси X нижнего этажа
+                    overlaying="y2",  # Накладываем поверх логарифмической оси Kn
+                    side="right",     # Выводим строго на правую сторону карточки
+                    range=[0, max(z0_profile) * 1.2] # Динамический линейный масштаб с запасом
+                )
+            )
+            
             # Фиолетовый пунктир толщины диска на нижнем этаже
-            fig.add_trace(go.Scatter(x=R, y=z0_profile, mode='lines', name='z0 Profile', line=dict(color='violet', width=1.5, dash='dot')), row=2, col=1)
+            fig.add_trace(go.Scatter(x=R, y=z0_profile, mode='lines', name='z0 Profile', line=dict(color='violet', width=1.7, dash='dot')), row=2, col=1)
+
             # Яркая голубая линия накопленной барионной массы на нижнем этаже
             fig.add_trace(go.Scatter(x=R, y=accumulated_mass_g, mode='lines', name='M_bar(R)', line=dict(color='cyan', width=2)), row=2, col=1)
 
