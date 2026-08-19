@@ -95,7 +95,9 @@ if stats:
     st.sidebar.subheader("📊 Статистика по выборке (174 г.):")
     
     st.sidebar.metric(label="Среднее значение MAPE", value=f"{stats['mean']:.2f}%")
-    
+# --- НАША ОДНА НОВАЯ СТРОКА ВЫВОДА ПОБЕДИТЕЛЯ ---
+    st.sidebar.markdown(f"<p style='font-size:12px; color:#4F8BF9; margin-top:-15px; margin-bottom:10px;'>🏆 Лучшая калибровка: <b>{best_galaxy_found}</b></p>", unsafe_allow_html=True)
+
     st.sidebar.metric(label="Максимальное MAPE", value=f"{stats['max_value']:.2f}%")
     st.sidebar.markdown(f"<p style='font-size:11px; color:gray; margin-top:-15px; margin-bottom:10px;'>Галактика: <b>{stats['max_name']}</b></p>", unsafe_allow_html=True)
     
