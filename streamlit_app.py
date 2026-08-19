@@ -122,6 +122,9 @@ for row_idx in range(int(np.ceil(len(galaxies_list) / 2))):
         V_mod = model_velocity_knudsen(final_params, R, Vbar, M_bar, R_d, z_c, M_bh, alpha)
         
         z0_profile = z_c * (1.0 + (R / R_d)**2)
+        # Рассчитываем кумулятивную (накопленную) барионную массу в тоннах/массах Солнца по радиусу
+        G_const_solar = 4.30091e-6 
+        accumulated_mass_g = (Vbar ** 2) * (R * 1000) / G_const_solar / 1e9
         Kn_profile_bh = get_combined_knudsen(lambda_0_fixed, R, M_bar, z0_profile, M_bh)
         
         # Точный поиск геометрической границы фазового перехода
@@ -160,6 +163,11 @@ for row_idx in range(int(np.ceil(len(galaxies_list) / 2))):
             fig.update_layout(height=450, showlegend=False, margin=dict(l=10, r=10, t=10, b=10))
             fig.update_yaxes(title_text="V (km/s)", row=1, col=1)
             fig.update_yaxes(title_text="Kn", type="log", row=2, col=1)
+            # Фиолетовый пунктир толщины диска на нижнем этаже
+            fig.add_trace(go.Scatter(x=R, y=z0_profile, mode='lines', name='z0 Profile', line=dict(color='violet', width=1.5, dash='dot')), row=2, col=1)
+            # Яркая голубая линия накопленной барионной массы на нижнем этаже
+            fig.add_trace(go.Scatter(x=R, y=accumulated_mass_g, mode='lines', name='M_bar(R)', line=dict(color='cyan', width=2)), row=2, col=1)
+
             fig.update_xaxes(title_text="R (kpc)", row=2, col=1)
             
             st.plotly_chart(fig, use_container_width=True)
