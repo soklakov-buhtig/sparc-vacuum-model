@@ -43,3 +43,34 @@ def calculate_global_mape_stats(sparc_database, calibration_galaxy, final_params
         }
     
     return None
+
+def find_best_calibration_galaxy(sparc_database, final_params, alpha, get_exact_sparc_data, model_velocity_knudsen, calibrate_vacuum_parameters):
+    """
+    Перебирает все галактики в базе в качестве калибровочных, 
+    находит ту, у которой средний MAPE по остальным 174 системам минимален,
+    и возвращает её имя.
+    """
+    galaxies_list = list(sparc_database.keys())
+    best_galaxy = None
+    lowest_global_mean = float('inf')
+    
+    for test_cal_galaxy in galaxies_list:
+        # 1. Извлекаем данные для тестовой калибровки
+        R_c, Vobs_c, Vbar_c, M_c, Rd_c, zc_c, Mbh_c = get_exact_sparc_data(test_cal_galaxy)
+        
+        # 2. Рассчитываем коэффициент сдвига для этой конкретной системы
+        k_shear_test = calibrate_vacuum_parameters(R_c, Vobs_c, Vbar_c, M_c, Rd_c, zc_c, Mbh_c, alpha, final_params[1])
+        test_params = [k_shear_test, final_params[1]]
+        
+        # 3. Считаем средний MAPE по остальным 174 системам при такой калибровке
+        stats = calculate_global_mape_stats(
+            sparc_database, test_cal_galaxy, test_params, alpha, 
+            get_exact_sparc_data, model_velocity_knudsen
+        )
+        
+        # 4. Фиксируем глобальный минимум
+        if stats and stats["mean"] < lowest_global_mean:
+            lowest_global_mean = stats["mean"]
+            best_galaxy = test_cal_galaxy
+            
+    return best_galaxy
