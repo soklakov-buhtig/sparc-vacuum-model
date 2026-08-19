@@ -39,8 +39,8 @@ def model_velocity_knudsen(params, R, Vbar, M_bar, R_d, z_c, M_bh, alpha):
     # Достаем критический Кнудсен динамически, без изменения streamlit_app.py
     # Задаем базовый порог 1e-5, если ползунок еще не проброшен в массив params
     Kn_crit = params[2] if len(params) > 2 else 1e-5
-    
-    V_vacuum_freeze = V_mod[np.where(Kn < Kn_crit)[0][0]] if np.any(Kn < Kn_crit) else 45.0 # Скорость замерзшего флуктуационного плато (км/с)
+
+    V_vacuum_freeze = V_mod[np.where(Kn > Kn_crit)[0]][0] if np.any(Kn > Kn_crit) else 5.0 # Скорость замерзшего флуктуационного плато (км/с)
     
     # Жесткий фазовый переход: вакуум кристаллизуется там, где Kn > Kn_crit
     # Исключаем первую центральную точку (R > min(R)), чтобы полностью заблокировать "усы" в ядрах
