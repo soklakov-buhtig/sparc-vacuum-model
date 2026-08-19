@@ -7,7 +7,8 @@ from sparc_data import SPARC_DATABASE
 from vacuum_physics import model_velocity_knudsen, get_combined_knudsen
 from vacuum_calibration import calibrate_vacuum_parameters
 # Добавить к вашим импортам в начале файла
-from vacuum_stats import calculate_global_mape_stats
+from vacuum_stats import calculate_global_mape_stats, find_best_calibration_galaxy
+
 
 # Настройка страницы веб-интерфейса
 st.set_page_config(page_title="SPARC Vacuum Model", layout="wide")
@@ -55,11 +56,23 @@ st.sidebar.caption(f"Текущее значение Kn_crit: **{Kn_crit:.7f}**"
 st.sidebar.markdown("---")
 st.sidebar.subheader("🎯 Настройка калибровки")
 
+# Перебираем базу и находим имя лучшей галактики для текущих ползунков alpha и lambda_0
+dummy_params = [0.0, lambda_0_fixed]  # k_shear откалибруется внутри
+best_galaxy_found = find_best_calibration_galaxy(
+    SPARC_DATABASE, dummy_params, alpha, 
+    get_exact_sparc_data, model_velocity_knudsen, calibrate_vacuum_parameters
+)
+
+# Передаем найденное имя как index по умолчанию в ваш селектбокс
+galaxies_keys = list(SPARC_DATABASE.keys())
+default_index = galaxies_keys.index(best_galaxy_found) if best_galaxy_found in galaxies_keys else 0
+
 calibration_galaxy = st.sidebar.selectbox(
     "Опорная галактика для калибровки:",
-    list(SPARC_DATABASE.keys()),
-    index=0
+    galaxies_keys,
+    index=default_index
 )
+
 
 
 R_cal, Vobs_cal, Vbar_cal, M_cal, Rd_cal, zc_cal, Mbh_cal = get_exact_sparc_data(calibration_galaxy)
