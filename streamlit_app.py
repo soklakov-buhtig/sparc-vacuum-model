@@ -6,6 +6,8 @@ from scipy.optimize import minimize
 from sparc_data import SPARC_DATABASE
 from vacuum_physics import model_velocity_knudsen, get_combined_knudsen
 from vacuum_calibration import calibrate_vacuum_parameters
+# Добавить к вашим импортам в начале файла
+from vacuum_stats import calculate_global_mape_stats
 
 # Настройка страницы веб-интерфейса
 st.set_page_config(page_title="SPARC Vacuum Model", layout="wide")
@@ -69,45 +71,25 @@ final_params = [k_shear_calibrated, lambda_0_fixed]
 st.sidebar.subheader("📈 Результаты калибровки:")
 st.sidebar.code(f"k_shear: {k_shear_calibrated:.6f}\nlambda_0: {lambda_0_fixed:.6f}")
 
-# --- БЛОК РАСЧЕТА ГЛОБАЛЬНОЙ СТАТИСТИКИ MAPE ---
-galaxies_list = list(SPARC_DATABASE.keys())
-all_mapes = {}
+# --- ВЫЗОВ ВНЕШНЕГО МОДУЛЯ СТАТИСТИКИ ---
+stats = calculate_global_mape_stats(
+    SPARC_DATABASE, calibration_galaxy, final_params, alpha, 
+    get_exact_sparc_data, model_velocity_knudsen
+)
 
-for g_name in galaxies_list:
-    if g_name == calibration_galaxy:
-        continue
-        
-    R_g, Vobs_g, Vbar_g, M_bar_g, R_d_g, z_c_g, M_bh_g = get_exact_sparc_data(g_name)
-    V_mod_g = model_velocity_knudsen(final_params, R_g, Vbar_g, M_bar_g, R_d_g, z_c_g, M_bh_g, alpha)
-    
-    mape_g = np.mean(np.abs((Vobs_g - V_mod_g) / Vobs_g)) * 100
-    all_mapes[g_name] = mape_g
-
-if len(all_mapes) > 0:
+if stats:
     st.sidebar.markdown("---")
     st.sidebar.subheader("📊 Статистика по выборке (174 г.):")
     
-    mapes_values = list(all_mapes.values())
-    mean_mape = np.mean(mapes_values)
-    max_mape = np.max(mapes_values)
-    min_mape = np.min(mapes_values)
-    std_mape = np.std(mapes_values)
+    st.sidebar.metric(label="Среднее значение MAPE", value=f"{stats['mean']:.2f}%")
     
-    # Ищем имена галактик, показавших экстремумы
-    max_galaxy_name = [name for name, val in all_mapes.items() if val == max_mape][0]
-    min_galaxy_name = [name for name, val in all_mapes.items() if val == min_mape][0]
+    st.sidebar.metric(label="Максимальное MAPE", value=f"{stats['max_value']:.2f}%")
+    st.sidebar.markdown(f"<p style='font-size:11px; color:gray; margin-top:-15px; margin-bottom:10px;'>Галактика: <b>{stats['max_name']}</b></p>", unsafe_allow_html=True)
     
-    # Вывод метрик с уменьшенным шрифтом подписей
-    st.sidebar.metric(label="Среднее значение MAPE", value=f"{mean_mape:.2f}%")
+    st.sidebar.metric(label="Минимальное MAPE", value=f"{stats['min_value']:.2f}%")
+    st.sidebar.markdown(f"<p style='font-size:11px; color:gray; margin-top:-15px; margin-bottom:10px;'>Галактика: <b>{stats['min_name']}</b></p>", unsafe_allow_html=True)
     
-    st.sidebar.metric(label="Максимальное MAPE", value=f"{max_mape:.2f}%")
-    st.sidebar.markdown(f"<p style='font-size:12px; color:gray; margin-top:-15px; margin-bottom:10px;'>Галактика: <b>{max_galaxy_name}</b></p>", unsafe_allow_html=True)
-    
-    st.sidebar.metric(label="Минимальное MAPE", value=f"{min_mape:.2f}%")
-    st.sidebar.markdown(f"<p style='font-size:12px; color:gray; margin-top:-15px; margin-bottom:10px;'>Галактика: <b>{min_galaxy_name}</b></p>", unsafe_allow_html=True)
-    
-    st.sidebar.metric(label="Стандартное отклонение", value=f"{std_mape:.2f}%")
-
+    st.sidebar.metric(label="Стандартное отклонение", value=f"{stats['std']:.2f}%")
 
 
 # --- 5. МАТРИЧНЫЙ ВЫВОД ВСЕХ 6 ГАЛАКТИК ---
