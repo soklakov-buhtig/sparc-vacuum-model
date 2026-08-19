@@ -8,13 +8,17 @@ from vacuum_physics import model_velocity_knudsen, get_combined_knudsen
 from vacuum_calibration import calibrate_vacuum_parameters
 # Добавить к вашим импортам в начале файла
 from vacuum_stats import calculate_global_mape_stats, find_best_calibration_galaxy
-
+from vacuum_groups import calculate_and_display_group_stats
 
 # Настройка страницы веб-интерфейса
 st.set_page_config(page_title="SPARC Vacuum Model", layout="wide")
 st.title("🛸 Интерактивная модель упругого вакуума Соклакова")
 st.markdown("### Верификация кривых вращения каталога SPARC на базе механики сплошных сред")
 
+calculate_and_display_group_stats(
+    SPARC_DATABASE, calibration_galaxy, final_params, alpha, 
+    get_exact_sparc_data, model_velocity_knudsen
+)
 
 # --- 2. ИСТИННЫЕ ДАННЫЕ ИЗ КАТАЛОГА SPARC ---
 def get_exact_sparc_data(galaxy_name):
