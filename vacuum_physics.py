@@ -26,7 +26,7 @@ def model_velocity_knudsen(params, R, Vbar, M_bar, R_d, z_c, M_bh, alpha):
     # На окраинах тусклых карликов вакуум слипается с материей, выходя на плато
     V_vacuum_freeze = 45.0  # Базовый уровень флуктуационного фона вакуума (км/с)
     # Включаем квантовую заморозку только на периферии (вне центрального ядра)
-    freeze_condition = (Vbar < 5.0) & (R > 1.5)
+    freeze_condition = (Vbar < 5.0) & (R > 0.5)
     return np.where(freeze_condition, np.maximum(V_mod, V_vacuum_freeze), V_mod)
 
 
