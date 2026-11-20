@@ -28,8 +28,11 @@ def get_galaxy_geometry_from_table(galaxy_name):
                 
             # 5. Начальное приближение массы центральной черной дыры
             m_bh = 0.001 if "3198" in search_name else 0.0001
+            q_flag = int(parts[17]) if len(parts) > 17 else 3
             
-            return r_disk, z_c, m_bh
+#           return r_disk, z_c, m_bh
+            return r_disk, z_c, m_bh, q_flag
+
             
     # Возврат базовых параметров, если объект не найден в каталоге Table1.mrt
-    return 4.0, 0.35, 0.001
+    return 4.0, 0.35, 0.001, 3
