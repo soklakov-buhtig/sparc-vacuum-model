@@ -62,3 +62,10 @@ This computational study accompanies the theoretical framework on flat-spacetime
   url          = {https://doi.org}
 }
 ```
+## Author & Academic Profiles
+* **Alexander V. Soklakov** — Independent Researcher (Continuum Mechanics, CAE, Unified Field Theory, Emergent Gravity)
+* **ORCID:** [0009-0002-4586-1800](https://orcid.org)
+* **Google Scholar:** [A. V. Soklakov](https://google.com)
+* **Scopus Author ID:**(https://scopus.com)
+* **Zenodo Preprint:** [doi:10.5281/zenodo.23952161](https://doi.org)
+
