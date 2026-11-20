@@ -10,8 +10,9 @@ def read_galaxy_from_zip(archive_path, galaxy_name):
         with z.open(file_name) as f:
             lines = [line.decode('utf-8') for line in f.readlines()]
             
-    r_list, vobs_list, vgas_list, vdisk_list = [], [], [], []
-    
+#   r_list, vobs_list, vgas_list, vdisk_list = [], [], [], [] #старый вариант
+    r_list, vobs_list, vgas_list, vdisk_list, vbul_list = [], [], [], [], []
+
     for line in lines:
         parts = line.strip().split()
         # Пропускаем пустые строки или строки заголовков (комментариев)
@@ -22,8 +23,11 @@ def read_galaxy_from_zip(archive_path, galaxy_name):
         vobs_list.append(float(parts[1]))
         vgas_list.append(float(parts[3]))
         vdisk_list.append(float(parts[4]))
+        vbul_list.append(float(parts[5]) if len(parts) > 5 else 0.0) # учет балджа - считывание
         
-    return np.array(r_list), np.array(vobs_list), np.array(vgas_list), np.array(vdisk_list)
+#   return np.array(r_list), np.array(vobs_list), np.array(vgas_list), np.array(vdisk_list) #старая версия
+    return np.array(r_list), np.array(vobs_list), np.array(vgas_list), np.array(vdisk_list), np.array(vbul_list)
+
 
 
 
@@ -45,8 +49,9 @@ for g_name in target_galaxies:
         # Автоматически вытаскиваем R_d (r_disk) и z_c из текстовой таблицы!
         r_disk, z_c, m_bh = get_galaxy_geometry_from_table(g_name)
         
-        r, vobs, vgas, vdisk = read_galaxy_from_zip(ARCHIVE_PATH, g_name)
-        
+#       r, vobs, vgas, vdisk = read_galaxy_from_zip(ARCHIVE_PATH, g_name) #старая версия
+        r, vobs, vgas, vdisk, vbul = read_galaxy_from_zip(ARCHIVE_PATH, g_name)
+
         vbar = np.sqrt(vgas**2 + 0.5 * vdisk**2)
         
         SPARC_DATABASE[g_name] = {
