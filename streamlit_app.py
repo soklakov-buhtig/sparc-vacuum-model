@@ -21,7 +21,10 @@ def get_exact_sparc_data(galaxy_name):
     g = SPARC_DATABASE[galaxy_name]
     
     # Считаем суммарный барионный профиль скорости по Ньютону из чистых компонентов
-    vbar = np.sqrt(g["Vgas"]**2 + 0.5 * g["Vdisk"]**2)
+    vbul = g.get("Vbul", 0.0)
+    vbar = np.sqrt(g["Vgas"]**2 + 0.5 * g["Vdisk"]**2 + 0.7 * vbul**2)
+#   vbar = np.sqrt(g["Vgas"]**2 + 0.5 * g["Vdisk"]**2) #старая версия
+    
     
     # Считаем эталонный профиль барионной массы
     G_const = 4.30091e-6
