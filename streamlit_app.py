@@ -88,27 +88,37 @@ final_params = [k_shear_calibrated, lambda_0_fixed, Kn_crit]
 st.sidebar.subheader("📈 Результаты калибровки:")
 st.sidebar.code(f"k_shear: {k_shear_calibrated:.6f}\nlambda_0: {lambda_0_fixed:.6f}")
 
-# --- ВЫЗОВ ВНЕШНЕГО МОДУЛЯ СТАТИСТИКИ ---
-stats = calculate_global_mape_stats(
-    SPARC_DATABASE, calibration_galaxy, final_params, alpha, 
-    get_exact_sparc_data, model_velocity_knudsen
-)
+# --- ЕДИНАЯ ФУНКЦИЯ ОТРИСОВКИ БЛОКА СТАТИСТИКИ И ГРУПП ---
+def render_stats_block(title_prefix, quality_filter=None, show_best_cal=False):
+    stats = calculate_global_mape_stats(
+        SPARC_DATABASE, calibration_galaxy, final_params, alpha,
+        get_exact_sparc_data, model_velocity_knudsen, quality_filter=quality_filter
+    )
+    if stats:
+        st.sidebar.markdown("---")
+        st.sidebar.subheader(f"📊 {title_prefix} ({stats['count']} г.):")
+        st.sidebar.metric(label="Среднее значение MAPE", value=f"{stats['mean']:.2f}%")
+        st.sidebar.metric(label="Медианное значение MAPE", value=f"{stats['median']:.2f}%")
+        if show_best_cal:
+            st.sidebar.markdown(f"<p style='font-size:12px; color:#4F8BF9; margin-top:-10px; margin-bottom:10px;'>🏆 Лучшая калибровка: <b>{best_galaxy_found}</b></p>", unsafe_allow_html=True)
+        st.sidebar.metric(label="Максимальное MAPE", value=f"{stats['max_value']:.2f}%")
+        st.sidebar.markdown(f"<p style='font-size:11px; color:gray; margin-top:-15px; margin-bottom:10px;'>Галактика: <b>{stats['max_name']}</b></p>", unsafe_allow_html=True)
+        st.sidebar.metric(label="Минимальное MAPE", value=f"{stats['min_value']:.2f}%")
+        st.sidebar.markdown(f"<p style='font-size:11px; color:gray; margin-top:-15px; margin-bottom:10px;'>Галактика: <b>{stats['min_name']}</b></p>", unsafe_allow_html=True)
+        st.sidebar.metric(label="Стандартное отклонение", value=f"{stats['std']:.2f}%")
 
-if stats:
-    st.sidebar.markdown("---")
-    st.sidebar.subheader("📊 Статистика по выборке (174 г.):")
-    
-    st.sidebar.metric(label="Среднее значение MAPE", value=f"{stats['mean']:.2f}%")
-# --- НАША ОДНА НОВАЯ СТРОКА ВЫВОДА ПОБЕДИТЕЛЯ ---
-    st.sidebar.markdown(f"<p style='font-size:12px; color:#4F8BF9; margin-top:-15px; margin-bottom:10px;'>🏆 Лучшая калибровка: <b>{best_galaxy_found}</b></p>", unsafe_allow_html=True)
+        calculate_and_display_group_stats(
+            SPARC_DATABASE, calibration_galaxy, final_params, alpha,
+            get_exact_sparc_data, model_velocity_knudsen, calibrate_vacuum_parameters,
+            quality_filter=quality_filter
+        )
 
-    st.sidebar.metric(label="Максимальное MAPE", value=f"{stats['max_value']:.2f}%")
-    st.sidebar.markdown(f"<p style='font-size:11px; color:gray; margin-top:-15px; margin-bottom:10px;'>Галактика: <b>{stats['max_name']}</b></p>", unsafe_allow_html=True)
-    
-    st.sidebar.metric(label="Минимальное MAPE", value=f"{stats['min_value']:.2f}%")
-    st.sidebar.markdown(f"<p style='font-size:11px; color:gray; margin-top:-15px; margin-bottom:10px;'>Галактика: <b>{stats['min_name']}</b></p>", unsafe_allow_html=True)
-    
-    st.sidebar.metric(label="Стандартное отклонение", value=f"{stats['std']:.2f}%")
+# 1. Полная выборка (все 174 галактики)
+render_stats_block("Статистика по выборке", quality_filter=None, show_best_cal=True)
+
+# 2. Эталонная выборка высокого качества (Q = 1)
+render_stats_block("Выборка высокого качества Q=1", quality_filter=1, show_best_cal=False)
+
 
 
 # --- 5. МАТРИЧНЫЙ ВЫВОД ВСЕХ 6 ГАЛАКТИК ---
@@ -184,9 +194,3 @@ for row_idx in range(int(np.ceil(len(galaxies_list) / 2))):
             fig.update_xaxes(title_text="R (kpc)", row=2, col=1)
             
             st.plotly_chart(fig, use_container_width=True)
-
-calculate_and_display_group_stats(
-    SPARC_DATABASE, calibration_galaxy, final_params, alpha,
-    get_exact_sparc_data, model_velocity_knudsen, calibrate_vacuum_parameters # <-- ДОБАВИЛИ СЮДА
-)
-
