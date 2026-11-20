@@ -29,7 +29,7 @@ Unlike standard dark matter halo fits (NFW, Burkert) that require 2–3 free par
 | **Total Mean MAPE (± SD)** | **21.26% (± 20.18%)** | **16.80% (± 9.18%)** |
 | **Total Median MAPE** | **15.00%** | **14.30%** |
 
-*(Baryonic velocity profiles include gas, stellar disk with $\Upsilon_{\text{disk}} = 0.5$, and central stellar bulge with $\Upsilon_{\text{bul}} = 0.7$).*
+Baryonic velocity profiles include gas, stellar disk with $\Upsilon_{\text{disk}} = 0.5$, and central stellar bulge with $\Upsilon_{\text{bul}} = 0.7$.
 
 ## Repository Structure
 * `streamlit_app.py` — Interactive Streamlit & Plotly web interface for real-time parameter exploration and curve visualization.
