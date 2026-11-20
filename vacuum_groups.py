@@ -2,13 +2,18 @@
 import numpy as np
 import streamlit as st
 
-def calculate_and_display_group_stats(sparc_database, calibration_galaxy, final_params, alpha, get_exact_sparc_data, model_velocity_knudsen, calibrate_vacuum_parameters):
+def calculate_and_display_group_stats(sparc_database, calibration_galaxy, final_params, alpha, get_exact_sparc_data, model_velocity_knudsen, calibrate_vacuum_parameters, quality_filter=None):
+#def calculate_and_display_group_stats(sparc_database, calibration_galaxy, final_params, alpha, get_exact_sparc_data, model_velocity_knudsen, calibrate_vacuum_parameters):
     """
     Разделяет галактики на 4 группы, находит для каждой группы лучшего
     локального калибратора и выводит индивидуальную статистику MAPE.
     """
-    galaxies_list = list(sparc_database.keys())
-    
+    #galaxies_list = list(sparc_database.keys())
+    if quality_filter is not None:
+        galaxies_list = [g for g in sparc_database.keys() if sparc_database[g].get("Q") == quality_filter]
+    else:
+        galaxies_list = list(sparc_database.keys())
+
     # 1. Шаг предварительной классификации всей базы
     group_assignments = {}
     for g_name in galaxies_list:
