@@ -40,7 +40,7 @@ Unlike standard dark matter halo fits (NFW, Burkert) that require 2–3 free par
 
 ## Quick Start
 ```bash
-git clone https://github.com
+git clone https://github.com/soklakov-buhtig/sparc-vacuum-model.git
 cd sparc-vacuum-model
 pip install -r requirements.txt
 streamlit run streamlit_app.py
