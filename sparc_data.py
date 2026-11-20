@@ -47,7 +47,9 @@ with zipfile.ZipFile(ARCHIVE_PATH, 'r') as z:
 for g_name in target_galaxies:
     try:
         # Автоматически вытаскиваем R_d (r_disk) и z_c из текстовой таблицы!
-        r_disk, z_c, m_bh = get_galaxy_geometry_from_table(g_name)
+#       r_disk, z_c, m_bh = get_galaxy_geometry_from_table(g_name)
+        r_d, z_c, m_bh, q_flag = get_galaxy_geometry_from_table(g_name)
+
         
 #       r, vobs, vgas, vdisk = read_galaxy_from_zip(ARCHIVE_PATH, g_name) #старая версия
         r, vobs, vgas, vdisk, vbul = read_galaxy_from_zip(ARCHIVE_PATH, g_name)
@@ -62,6 +64,7 @@ for g_name in target_galaxies:
             "Vbul": vbul,
             "R_d": r_disk,  # Передаем динамический параметр из таблицы
             "z_c": z_c,     # Передаем динамический параметр
+            "Q": q_flag,
             "M_bh": m_bh
         }
     except Exception as e:
