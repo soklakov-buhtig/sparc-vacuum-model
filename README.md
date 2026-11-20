@@ -49,7 +49,7 @@ streamlit run streamlit_app.py
 ## Related Theoretical Work & Citation
 This computational study accompanies the theoretical framework on flat-spacetime optical-force and continuum-vacuum representations of gravity:
 
-> **Soklakov, A. V.** (2026). *Gauge-Equivalent Optical-Force Representation of the Schwarzschild Metric via Isotropic Vacuum Fluctuations*. Zenodo. https://doi.org
+> **Soklakov, A. V.** (2026). *Gauge-Equivalent Optical-Force Representation of the Schwarzschild Metric via Isotropic Vacuum Fluctuations*. Zenodo. https://doi.org/10.5281/zenodo.23952161
 
 ```bibtex
 @misc{soklakov2026vacuum,
@@ -59,7 +59,7 @@ This computational study accompanies the theoretical framework on flat-spacetime
   publisher    = {Zenodo},
   version      = {v1},
   doi          = {10.5281/zenodo.23952161},
-  url          = {https://doi.org}
+  url          = {https://doi.org/10.5281/zenodo.23952161}
 }
 ```
 ## Author & Academic Profiles
