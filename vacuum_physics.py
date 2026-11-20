@@ -13,7 +13,7 @@ def get_combined_knudsen(lambda_0, R, M_bar, z0_profile, M_bh=0.0):
 
 def model_velocity_knudsen(params, R, Vbar, M_bar, R_d, z_c, M_bh, alpha):
     k_shear, lambda_0, *_ = params
-    a0_base = 3600.0 * k_shear
+#   a0_base = 3600.0 * k_shear
 
     G_CONST = 4.30091e-6  # kpc * (km/s)^2 / M_sun (здесь перевод из 10^9 M_sun в M_sun нужен)
     a_bh = (G_CONST * (M_bh * 1e9)) / np.maximum(R**2, 1e-3)
@@ -23,7 +23,8 @@ def model_velocity_knudsen(params, R, Vbar, M_bar, R_d, z_c, M_bh, alpha):
 
     # Расчет локального числа Кнудсена
     Kn = get_combined_knudsen(lambda_0, R, M_bar, z0_profile, M_bh)
-
+    k_shear_eff = k_shear * (1.0 - np.exp(-Kn))
+    a0_base = 3600.0 * k_shear_eff
     # Аналитический переход: упругость плавно затухает в центр через экспоненту np.exp(-Kn)
     a_eff = (a0_base / (1.0 + Kn)) * (1.0 / np.maximum(Kn, 1e-6)**alpha) * np.exp(-Kn)
 
