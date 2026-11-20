@@ -58,7 +58,8 @@ for g_name in target_galaxies:
             "R": r,
             "Vobs": vobs,
             "Vgas": vgas,
-            "Vdisk": vdisk,           
+            "Vdisk": vdisk,        
+            "Vbul": vbul,
             "R_d": r_disk,  # Передаем динамический параметр из таблицы
             "z_c": z_c,     # Передаем динамический параметр
             "M_bh": m_bh
