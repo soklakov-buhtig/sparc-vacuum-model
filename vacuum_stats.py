@@ -1,7 +1,9 @@
 # vacuum_stats.py
 import numpy as np
 
-def calculate_global_mape_stats(sparc_database, calibration_galaxy, final_params, alpha, get_exact_sparc_data, model_velocity_knudsen):
+def calculate_global_mape_stats(sparc_database, calibration_galaxy, final_params, alpha, get_exact_sparc_data, model_velocity_knudsen, quality_filter=None):
+
+#def calculate_global_mape_stats(sparc_database, calibration_galaxy, final_params, alpha, get_exact_sparc_data, model_velocity_knudsen):
     """
     Вычисляет глобальные статистические показатели MAPE по всей выборке из 174 галактик,
     исключая текущую опорную галактику калибровки.
@@ -12,7 +14,9 @@ def calculate_global_mape_stats(sparc_database, calibration_galaxy, final_params
     for g_name in galaxies_list:
         if g_name == calibration_galaxy:
             continue
-            
+        if quality_filter is not None and sparc_database[g_name].get("Q") != quality_filter:
+            continue
+        
         # Извлекаем экспериментальные данные
         R_g, Vobs_g, Vbar_g, M_bar_g, R_d_g, z_c_g, M_bh_g = get_exact_sparc_data(g_name)
         
@@ -34,14 +38,16 @@ def calculate_global_mape_stats(sparc_database, calibration_galaxy, final_params
         min_galaxy = [name for name, val in all_mapes.items() if val == min_mape][0]
         
         return {
+            "count": len(mapes_values),
             "mean": np.mean(mapes_values),
+            "median": np.median(mapes_values),
             "max_value": max_mape,
             "max_name": max_galaxy,
             "min_value": min_mape,
             "min_name": min_galaxy,
             "std": np.std(mapes_values)
         }
-    
+
     return None
 
 def find_best_calibration_galaxy(sparc_database, final_params, alpha, get_exact_sparc_data, model_velocity_knudsen, calibrate_vacuum_parameters):
