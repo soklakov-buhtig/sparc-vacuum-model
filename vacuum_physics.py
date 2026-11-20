@@ -2,9 +2,8 @@ import numpy as np
 
 
 def get_combined_knudsen(lambda_0, R, M_bar, z0_profile, M_bh=0.0):
-    # Плотность вещества (барионный диск + центральная ЧД) на единицу площади вертикального торца диска
-    # Площадь торца цилиндра на радиусе R равна 2 * pi * R * z0_profile
-    M_total = M_bar + (M_bh * 1e9)
+    # M_bar и M_bh в SPARC_DATABASE заданы в одинаковых единицах (10^9 M_sun)
+    M_total = M_bar + M_bh
     rho_torus = M_total / (2 * np.pi * np.maximum(R, 1e-3) * np.maximum(z0_profile, 1e-3))
     rho_torus = np.maximum(rho_torus, 1e-25)
 
@@ -16,7 +15,7 @@ def model_velocity_knudsen(params, R, Vbar, M_bar, R_d, z_c, M_bh, alpha):
     k_shear, lambda_0, *_ = params
     a0_base = 3600.0 * k_shear
 
-    G_CONST = 4.30091e-6  # kpc * (km/s)^2 / M_sun
+    G_CONST = 4.30091e-6  # kpc * (km/s)^2 / M_sun (здесь перевод из 10^9 M_sun в M_sun нужен)
     a_bh = (G_CONST * (M_bh * 1e9)) / np.maximum(R**2, 1e-3)
     a_newton = (Vbar**2 / R) + a_bh
 
