@@ -52,7 +52,7 @@ for g_name in target_galaxies:
 #       r, vobs, vgas, vdisk = read_galaxy_from_zip(ARCHIVE_PATH, g_name) #старая версия
         r, vobs, vgas, vdisk, vbul = read_galaxy_from_zip(ARCHIVE_PATH, g_name)
 
-        vbar = np.sqrt(vgas**2 + 0.5 * vdisk**2)
+#       vbar = np.sqrt(vgas**2 + 0.5 * vdisk**2) # не нужна
         
         SPARC_DATABASE[g_name] = {
             "R": r,
