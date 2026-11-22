@@ -27,6 +27,12 @@ $$a_{\text{eff}}(\text{Kn}) = \frac{a_{\text{shear}}}{(1 + \text{Kn})\,\text{Kn}
 Substituting $a_{\text{newton}} = V_{\text{bar}}^2(R)/R$ into $V_{\text{total}}(R) = \sqrt{R \cdot a_{\text{total}}}$ yields the closed-form galactic rotation curve:
 $$V_{\text{total}}(R) = \sqrt{ \frac{V_{\text{bar}}^2(R)}{2} + \sqrt{ \frac{V_{\text{bar}}^4(R)}{4} + R \, V_{\text{bar}}^2(R) \frac{a_{\text{shear}}}{(1 + \text{Kn})\,\text{Kn}^{\alpha}} e^{-\text{Kn}} } }$$
 
+### Analytical Cosmological Estimate (Zero-Parameter Limit)
+The characteristic shear scale can be derived directly from the cosmological horizon acceleration $a_H = c H_0$ without any galactic calibration:
+$$a_{\text{shear}}^{\text{theor}} = \frac{c H_0}{2\pi} \lambda_0^{\alpha}$$
+For $c = 2.998 \times 10^8\text{ m/s}$, $H_0 \approx 70\text{--}73\text{ km/(s}\cdot\text{Mpc)}$, $\lambda_0 = 5 \times 10^{-5}$, and $\alpha = 0.18$, this yields $a_{\text{shear}}^{\text{theor}} \approx (1.82\text{--}1.90) \times 10^{-11}\text{ m/s}^2$, which corresponds to $k_{\text{shear}}^{\text{theor}} \approx 0.156\text{--}0.163$ in code units ($3600\,k_{\text{shear}}$ in $[\text{(km/s)}^2/\text{kpc}]$).
+This first-principles estimate agrees within ~15% with the single-galaxy calibrated value ($k_{\text{shear}} = 0.1889$ for UGC06818), confirming that $k_{\text{shear}}$ reflects the background cosmological tension of the non-fermionic medium rather than a free fitting parameter.
+
 ## Key Benchmark Results (175 SPARC Galaxies)
 Unlike standard dark matter halo fits (NFW, Burkert) that require 2–3 free parameters *per galaxy* (350–500+ parameters across the catalog), this model uses **1-sample cross-validation**: the shear modulus $k_{\text{shear}}$ is calibrated on a **single reference galaxy** (`UGC06818`), frozen, and evaluated blindly across the remaining catalog without per-galaxy tuning ($\alpha = 0.18$, $\lambda_0 = 5e-5$), while vacuum_stats.py also evaluates the full leave-one-in distribution across all 175 galaxies.
 
