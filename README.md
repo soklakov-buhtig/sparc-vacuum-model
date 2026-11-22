@@ -92,5 +92,7 @@ This computational study accompanies the theoretical framework on flat-spacetime
 * **ORCID:** [0009-0002-4586-1800](https://orcid.org/0009-0002-4586-1800)
 * **Google Scholar:** [A. V. Soklakov](https://scholar.google.com/citations?user=n4iAGDwAAAAJ)
 * **Scopus Author ID:** [57209293868](https://scopus.com/authid/detail.uri?authorId=57209293868)
-* **Zenodo Preprint:** [doi:10.5281/zenodo.23952161](https://doi.org/10.5281/zenodo.23952161)
 
+[![DOI](https://zenodo.org)](https://doi.org)
+**Preprint II (Galactic Scale):** A. V. Soklakov, *Shear-Elastic Rheology of the Non-Fermionic Medium: A Zero-to-One Parameter Explanation of Galactic Rotation Curves Without Dark Matter Halos*, Zenodo (2026), [doi:10.5281/zenodo.24446953](https://doi.org)
+**Preprint I (Relativistic Scale):** [doi:10.5281/zenodo.23952161]([https://doi.org](https://doi.org/10.5281/zenodo.23952161))
