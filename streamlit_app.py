@@ -128,8 +128,8 @@ c4.metric("Среднее MAPE (50-й квантиль)", f"{cv_dist['mean_p50']
 st.markdown("---")
 
 # --- 5. МАТРИЧНЫЙ ВЫВОД ВСЕХ 6 ГАЛАКТИК ---
-#galaxies_list = list(SPARC_DATABASE.keys())
-galaxies_list = list(SPARC_DATABASE.keys())[:4]  # Временный лимит на 4 графика
+galaxies_list = list(SPARC_DATABASE.keys())
+#galaxies_list = list(SPARC_DATABASE.keys())[:4]  # Временный лимит на 4 графика
 
 
 for row_idx in range(int(np.ceil(len(galaxies_list) / 2))):
