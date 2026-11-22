@@ -10,16 +10,16 @@ $$\text{Kn}(R) = \frac{\lambda_0}{\Sigma_{\text{torus}}(R)}, \quad \Sigma_{\text
 
 where $z_0(R) = z_c \left(1 + (R / R_d)^2\right)$ describes the vertical scale height flaring of the galactic disk.
 
-The total effective acceleration combines the Newtonian baryonic field (gas, stellar disk, central bulge, and central black hole) with the shear-elastic response of the vacuum medium:
+The total effective acceleration combines the Newtonian baryonic field (gas, stellar disk, central bulge, and central black hole) with the shear-elastic response of the non-fermionic medium:
 
 $$a_{\text{total}} = \frac{a_{\text{newton}} + \sqrt{a_{\text{newton}}^2 + 4 \, a_{\text{newton}} \, a_{\text{eff}}(\text{Kn})}}{2}$$
 
-* **High-density regime ($\text{Kn} \to 0$, Solar System & galactic cores):** Vacuum shear stress relaxes rapidly; the medium behaves as an ideal superfluid and recovers standard Newtonian/Einsteinian dynamics.
+* **High-density regime ($\text{Kn} \to 0$, Solar System & galactic cores):** Non-fermionic shear stress relaxes rapidly; the substrate behaves as an ideal superfluid and recovers standard Newtonian/Einsteinian dynamics.
 * **Transition regime (galactic outskirts & dwarf disks):** Rarefaction increases $\text{Kn}$, activating shear elasticity and naturally producing asymptotically flat rotation curves.
 * **Deep-space limit ($\text{Kn} \gg 1$):** Exponential damping ($e^{-\text{Kn}}$) prevents infinite halo mass divergence at large radii.
 
 ## Key Benchmark Results (175 SPARC Galaxies)
-Unlike standard dark matter halo fits (NFW, Burkert) that require 2–3 free parameters *per galaxy* (350–500+ parameters across the catalog), this model uses **1-sample cross-validation**: the shear modulus $k_{\text{shear}}$ is calibrated on a **single reference galaxy** (`UGC06818`), frozen, and evaluated blindly across the remaining catalog without per-galaxy tuning ($\alpha = 0.18$, $\lambda_0 = 0.05$).
+Unlike standard dark matter halo fits (NFW, Burkert) that require 2–3 free parameters *per galaxy* (350–500+ parameters across the catalog), this model uses **1-sample cross-validation**: the shear modulus $k_{\text{shear}}$ is calibrated on a **single reference galaxy** (`UGC06818`), frozen, and evaluated blindly across the remaining catalog without per-galaxy tuning ($\alpha = 0.18$, $\lambda_0 = 5e-5$), while vacuum_stats.py also evaluates the full leave-one-in distribution across all 175 galaxies.
 
 | Kinematic Group ($V_{\max}$) | Full Sample ($n=174$) Mean MAPE | High-Quality Sample $Q=1$ ($n=99$) Mean MAPE |
 | :--- | :---: | :---: |
@@ -36,7 +36,7 @@ Baryonic velocity profiles include gas, stellar disk with $\Upsilon_{\text{disk}
 * `streamlit_app.py` — Interactive Streamlit & Plotly web interface for real-time parameter exploration and curve visualization.
 * `vacuum_physics.py` — Core continuum-mechanics equations (`get_combined_knudsen`, `model_velocity_knudsen`).
 * `vacuum_calibration.py` — Single-galaxy L2 optimization routine for $k_{\text{shear}}$.
-* `vacuum_stats.py` — Global MAPE evaluation and automated leave-one-in calibrator search across all 175 galaxies.
+* `vacuum_stats.py` — Global MAPE evaluation and full 175-galaxy leave-one-in cross-validation distribution.
 * `vacuum_groups.py` — Kinematic classification and group-level benchmarking (`HSB`, `LSB`, `CDW`, `LDW`).
 * `sparc_data.py` & `sparc_parser.py` — Automated parser for `Rotmod_LTG.zip` and morphological disk scale parameters (`Table1.mrt`).
 
