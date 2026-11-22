@@ -3,9 +3,10 @@
 Interactive research dashboard and numerical verification suite for modeling galactic rotation curves from the **SPARC** catalog (*Spitzer Photometry and Accurate Rotation Curves*, Lelli et al., 2016) without cold dark matter (CDM) halos.
 
 ## Physical Concept
-Instead of introducing non-baryonic dark matter particles, this model treats the physical vacuum as a polarizable, shear-elastic continuous medium whose rheological response depends on the local rarefaction of baryonic matter — parameterized via a geometric **Knudsen number ($\text{Kn}$)**:
+Instead of postulating non-existent individual dark matter halos around galaxies, this model treats empty geometric space as passive and describes the universe as filled with a continuous elastoplastic non-fermionic energy medium. Its rheological shear response depends on the local rarefaction of visible (fermionic) matter — parameterized via an effective Knudsen number (Kn):
 
-$$\text{Kn}(R) = \frac{\lambda_0}{\rho_{\text{torus}}(R)}, \quad \rho_{\text{torus}}(R) = \frac{M_{\text{bar}}(R)}{2\pi R \, z_0(R)}$$
+$$\text{Kn}(R) = \frac{\lambda_0}{\Sigma_{\text{torus}}(R)}, \quad \Sigma_{\text{torus}}(R) = \frac{M_{\text{bar}}(R)}{2\pi R \, z_0(R)} \quad \left[\frac{10^9\,M_\odot}{\text{kpc}^2}\right]$$
+
 
 where $z_0(R) = z_c \left(1 + (R / R_d)^2\right)$ describes the vertical scale height flaring of the galactic disk.
 
