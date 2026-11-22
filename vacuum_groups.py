@@ -70,6 +70,7 @@ def calculate_and_display_group_stats(sparc_database, calibration_galaxy, final_
                 if group_mean < lowest_global_mean if 'lowest_global_mean' in locals() else group_mean < lowest_group_mean:
                     lowest_group_mean = group_mean
                     best_group_gal = test_cal_gal
+                    
             elif len(group_galaxies) == 1:
                 best_group_gal = test_cal_gal
                     
