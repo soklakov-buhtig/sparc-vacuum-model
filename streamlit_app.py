@@ -28,8 +28,10 @@ def get_exact_sparc_data(galaxy_name):
     
     # Считаем эталонный профиль барионной массы
     G_const = 4.30091e-6
-    m_bar = (vbar**2) * (g["R"] * 1000) / G_const / 1e9
-    m_bar = np.maximum(m_bar, 1e-3) # Защита центра от нуля
+#   m_bar = (vbar**2) * (g["R"] * 1000) / G_const / 1e9
+    m_bar = (vbar**2) * (g["R"]) / G_const / 1e9
+#   m_bar = np.maximum(m_bar, 1e-3) # Защита центра от нуля
+    m_bar = np.maximum(m_bar, 1e-6) # Защита центра от нуля
     
     return g["R"], g["Vobs"], vbar, m_bar, g["R_d"], g["z_c"], g["M_bh"]
 
