@@ -24,6 +24,9 @@ $$a_{\text{eff}}(\text{Kn}) = \frac{a_{\text{shear}}}{(1 + \text{Kn})\,\text{Kn}
 * **Transition regime (galactic outskirts & dwarf disks):** Rarefaction increases $\text{Kn}$, activating shear elasticity and naturally producing asymptotically flat rotation curves.
 * **Deep-space limit ($\text{Kn} \gg 1$):** Exponential damping ($e^{-\text{Kn}}$) prevents infinite halo mass divergence at large radii.
 
+Substituting $a_{\text{newton}} = V_{\text{bar}}^2(R)/R$ into $V_{\text{total}}(R) = \sqrt{R \cdot a_{\text{total}}}$ yields the closed-form galactic rotation curve:
+$$V_{\text{total}}(R) = \sqrt{ \frac{V_{\text{bar}}^2(R)}{2} + \sqrt{ \frac{V_{\text{bar}}^4(R)}{4} + R \, V_{\text{bar}}^2(R) \frac{a_{\text{shear}}}{(1 + \text{Kn})\,\text{Kn}^{\alpha}} e^{-\text{Kn}} } }$$
+
 ## Key Benchmark Results (175 SPARC Galaxies)
 Unlike standard dark matter halo fits (NFW, Burkert) that require 2–3 free parameters *per galaxy* (350–500+ parameters across the catalog), this model uses **1-sample cross-validation**: the shear modulus $k_{\text{shear}}$ is calibrated on a **single reference galaxy** (`UGC06818`), frozen, and evaluated blindly across the remaining catalog without per-galaxy tuning ($\alpha = 0.18$, $\lambda_0 = 5e-5$), while vacuum_stats.py also evaluates the full leave-one-in distribution across all 175 galaxies.
 
