@@ -32,6 +32,14 @@ Unlike standard dark matter halo fits (NFW, Burkert) that require 2–3 free par
 
 Baryonic velocity profiles include gas, stellar disk with $\Upsilon_{\text{disk}} = 0.5$, and central stellar bulge with $\Upsilon_{\text{bul}} = 0.7$.
 
+### All-175 Leave-One-In Cross-Validation (Calibrator Sensitivity)
+To verify that the model does not rely on a lucky choice of the reference galaxy, $k_{\text{shear}}$ was calibrated sequentially on each of the 175 SPARC galaxies and tested against the remaining 174:
+- **Median MAPE (25th percentile):** 15.64%
+- **Median MAPE (50th percentile / center):** 18.25%
+- **Median MAPE (75th percentile):** 23.60%
+- **Mean MAPE (50th percentile):** 24.12%
+
+
 ## Repository Structure
 * `streamlit_app.py` — Interactive Streamlit & Plotly web interface for real-time parameter exploration and curve visualization.
 * `vacuum_physics.py` — Core continuum-mechanics equations (`get_combined_knudsen`, `model_velocity_knudsen`).
