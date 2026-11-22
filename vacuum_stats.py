@@ -80,3 +80,18 @@ def find_best_calibration_galaxy(sparc_database, final_params, alpha, get_exact_
             best_galaxy = test_cal_galaxy
             
     return best_galaxy
+
+def evaluate_all_calibrators_distribution(sparc_database, final_params, alpha, get_exact_sparc_data, model_velocity_knudsen, calibrate_vacuum_parameters):
+    medians = []
+    means = []
+    for cal_g in sparc_database.keys():
+        R_c, Vobs_c, Vbar_c, M_c, Rd_c, zc_c, Mbh_c = get_exact_sparc_data(cal_g)
+        k_test = calibrate_vacuum_parameters(R_c, Vobs_c, Vbar_c, M_c, Rd_c, zc_c, Mbh_c, alpha, final_params[1])
+        st = calculate_global_mape_stats(sparc_database, cal_g, [k_test, final_params[1]], alpha, get_exact_sparc_data, model_velocity_knudsen)
+        if st:
+            medians.append(st["median"])
+            means.append(st["mean"])
+    return {
+        "med_p25": np.percentile(medians, 25), "med_p50": np.percentile(medians, 50), "med_p75": np.percentile(medians, 75),
+        "mean_p50": np.percentile(means, 50)
+    }
