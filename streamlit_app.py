@@ -7,7 +7,8 @@ from sparc_data import SPARC_DATABASE
 from vacuum_physics import model_velocity_knudsen, get_combined_knudsen
 from vacuum_calibration import calibrate_vacuum_parameters
 # Добавить к вашим импортам в начале файла
-from vacuum_stats import calculate_global_mape_stats, find_best_calibration_galaxy
+#from vacuum_stats import calculate_global_mape_stats, find_best_calibration_galaxy
+from vacuum_stats import calculate_global_mape_stats, find_best_calibration_galaxy, evaluate_all_calibrators_distribution
 from vacuum_groups import calculate_and_display_group_stats
 
 # Настройка страницы веб-интерфейса
