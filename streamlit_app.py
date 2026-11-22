@@ -47,14 +47,6 @@ lambda_0_fixed = st.sidebar.slider(
     min_value=0.01, max_value=0.20, value=0.05, step=0.01
 )
 
-# Наш плавный логарифмический ползунок степеней Кнудсена
-Kn_crit_exp = st.sidebar.slider(
-    "Критерий перехода сред (lg Kn_crit):", 
-    min_value=-6.0, max_value=-1.0, value=-5.0, step=0.1, format="%.1f"
-)
-Kn_crit = 10**Kn_crit_exp
-st.sidebar.caption(f"Текущее значение Kn_crit: **{Kn_crit:.7f}**")
-
 # --- 4. ДИНАМИЧЕСКИЙ ВЫБОР ГАЛАКТИКИ ДЛЯ КАЛИБРОВКИ ---
 st.sidebar.markdown("---")
 st.sidebar.subheader("🎯 Настройка калибровки")
