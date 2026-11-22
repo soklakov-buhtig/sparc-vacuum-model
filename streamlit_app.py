@@ -117,7 +117,7 @@ render_stats_block("Выборка высокого качества Q=1", quali
 
 @st.cache_data
 def get_cached_cv_stats(_db, lam, alp):
-return evaluate_all_calibrators_distribution(_db, [0.0, lam], alp, get_exact_sparc_data, model_velocity_knudsen, calibrate_vacuum_parameters)
+    return evaluate_all_calibrators_distribution(_db, [0.0, lam], alp, get_exact_sparc_data, model_velocity_knudsen, calibrate_vacuum_parameters)
 cv_dist = get_cached_cv_stats(SPARC_DATABASE, lambda_0_fixed, alpha)
 st.markdown("#### 📊 Перекрёстная проверка по всем 175 калибраторам (All-175 Leave-One-In)")
 c1, c2, c3, c4 = st.columns(4)
