@@ -128,7 +128,11 @@ c4.metric("Среднее MAPE (50-й квантиль)", f"{cv_dist['mean_p50']
 st.markdown("---")
 
 # --- 5. МАТРИЧНЫЙ ВЫВОД ВСЕХ 6 ГАЛАКТИК ---
-galaxies_list = list(SPARC_DATABASE.keys())
+#galaxies_list = list(SPARC_DATABASE.keys())
+all_galaxies = list(SPARC_DATABASE.keys())
+per_page = 20
+page = st.number_input("Страница каталога (по 20 галактик):", min_value=1, max_value=int(np.ceil(len(all_galaxies) / per_page)), value=1)
+galaxies_list = all_galaxies[(page - 1) * per_page : page * per_page]
 #galaxies_list = list(SPARC_DATABASE.keys())[:4]  # Временный лимит на 4 графика
 
 
