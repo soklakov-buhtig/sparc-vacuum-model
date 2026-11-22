@@ -14,6 +14,12 @@ The total effective acceleration combines the Newtonian baryonic field (gas, ste
 
 $$a_{\text{total}} = \frac{a_{\text{newton}} + \sqrt{a_{\text{newton}}^2 + 4 \, a_{\text{newton}} \, a_{\text{eff}}(\text{Kn})}}{2}$$
 
+where the effective shear-elastic acceleration is derived from the trace-free stress tensor $\pi_{\mu\nu}$ (Preprint I) via a Maxwell-type viscoelastic relaxation law:
+$$a_{\text{eff}}(\text{Kn}) = \frac{a_{\text{shear}}}{(1 + \text{Kn})\,\text{Kn}^{\alpha}} e^{-\text{Kn}}$$
+- **Viscoelastic transition $(1 + \text{Kn})^{-1}$:** Smoothly suppresses shear stress in dense Newtonian regimes ($\text{Kn} \ll 1$).
+- **Power-law elasticity $\text{Kn}^{-\alpha}$:** Captures scale-free shear stiffening of the rarefied non-fermionic substrate ($\alpha = 0.18$).
+- **Cosmological shear scale $a_{\text{shear}} \propto c H_0$:** Sets the characteristic background tension of the non-fermionic medium without per-galaxy dark matter parameters.
+
 * **High-density regime ($\text{Kn} \to 0$, Solar System & galactic cores):** Non-fermionic shear stress relaxes rapidly; the substrate behaves as an ideal superfluid and recovers standard Newtonian/Einsteinian dynamics.
 * **Transition regime (galactic outskirts & dwarf disks):** Rarefaction increases $\text{Kn}$, activating shear elasticity and naturally producing asymptotically flat rotation curves.
 * **Deep-space limit ($\text{Kn} \gg 1$):** Exponential damping ($e^{-\text{Kn}}$) prevents infinite halo mass divergence at large radii.
