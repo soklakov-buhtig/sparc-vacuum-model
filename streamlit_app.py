@@ -135,7 +135,8 @@ for row_idx in range(int(np.ceil(len(galaxies_list) / 2))):
         z0_profile = z_c * (1.0 + (R / R_d)**2)
         # Рассчитываем кумулятивную (накопленную) барионную массу в тоннах/массах Солнца по радиусу
         G_const_solar = 4.30091e-6 
-        accumulated_mass_g = (Vbar ** 2) * (R * 1000) / G_const_solar / 1e9
+#       accumulated_mass_g = (Vbar ** 2) * (R * 1000) / G_const_solar / 1e9
+        accumulated_mass_g = (Vbar ** 2) * (R) / G_const_solar / 1e9
         Kn_profile_bh = get_combined_knudsen(lambda_0_fixed, R, M_bar, z0_profile, M_bh)
         
 
