@@ -46,7 +46,8 @@ alpha = st.sidebar.slider(
 
 lambda_0_fixed = st.sidebar.slider(
     "Масштаб квантов вакуума (lambda_0):", 
-    min_value=0.01, max_value=0.20, value=0.05, step=0.01
+    min_value=1e-5, max_value=2e-4, value=5e-5, step=1e-5, format="%.5f"
+#   min_value=0.01, max_value=0.20, value=0.05, step=0.01
 )
 
 # --- 4. ДИНАМИЧЕСКИЙ ВЫБОР ГАЛАКТИКИ ДЛЯ КАЛИБРОВКИ ---
