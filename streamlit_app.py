@@ -124,7 +124,7 @@ for row_idx in range(int(np.ceil(len(galaxies_list) / 2))):
         g_name = galaxies_list[row_idx * 2 + col_idx]
         
         R, Vobs, Vbar, M_bar, R_d, z_c, M_bh = get_exact_sparc_data(g_name)
-        # Рассчитываем скорость с учетом динамического фазового фильтра Kn_crit
+        # Рассчитываем скорость
         V_mod = model_velocity_knudsen(final_params, R, Vbar, M_bar, R_d, z_c, M_bh, alpha)
         
         z0_profile = z_c * (1.0 + (R / R_d)**2)
