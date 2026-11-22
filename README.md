@@ -36,14 +36,14 @@ This first-principles estimate agrees within ~15% with the single-galaxy calibra
 ## Key Benchmark Results (175 SPARC Galaxies)
 Unlike standard dark matter halo fits (NFW, Burkert) that require 2–3 free parameters *per galaxy* (350–500+ parameters across the catalog), this model uses **1-sample cross-validation**: the shear modulus $k_{\text{shear}}$ is calibrated on a **single reference galaxy** (`UGC06818`), frozen, and evaluated blindly across the remaining catalog without per-galaxy tuning ($\alpha = 0.18$, $\lambda_0 = 5e-5$), while vacuum_stats.py also evaluates the full leave-one-in distribution across all 175 galaxies.
 
-| Kinematic Group ($V_{\max}$) | Full Sample ($n=174$) Mean MAPE | High-Quality Sample $Q=1$ ($n=99$) Mean MAPE |
-| :--- | :---: | :---: |
-| **HSB** ($V_{\max} \ge 150\text{ km/s}$) | **12.66%** ($n=56$) | **12.91%** ($n=39$) |
-| **LSB** ($80 \le V_{\max} < 150\text{ km/s}$) | **21.76%** ($n=60$) | **19.66%** ($n=41$) |
-| **CDW** ($50 \le V_{\max} < 80\text{ km/s}$) | **22.28%** ($n=36$) | **19.09%** ($n=18$) |
-| **LDW** ($V_{\max} < 50\text{ km/s}$) | **40.13%** ($n=22$) | **9.75%** ($n=1$) |
-| **Total Mean MAPE (± SD)** | **21.26% (± 20.18%)** | **16.80% (± 9.18%)** |
-| **Total Median MAPE** | **15.00%** | **14.30%** |
+
+| Group | Kinematic Regime | All ($N$) | All Mean MAPE | $Q=1$ ($N$) | $Q=1$ Mean MAPE |
+| :--- | :--- | :---: | :---: | :---: | :---: |
+| `HSB` | High-Speed Spirals ($V_{\max} \ge 150\text{ km/s}$) | 56 | 12.66% | 39 | 12.91% |
+| `LSB` | Intermediate Disks ($80 \le V_{\max} < 150\text{ km/s}$) | 60 | 21.76% | 41 | 19.67% |
+| `CDW` | Compact Dwarfs ($50 \le V_{\max} < 80\text{ km/s}$) | 36 | 22.29% | 18 | 19.12% |
+| `LDW` | Low-Mass Dwarfs ($V_{\max} < 50\text{ km/s}$) | 22 | 40.16% | 1 | 9.40% |
+| **Total** | **Out-of-Sample Catalog** | **174** | **21.27% (Med 15.00%)** | **99** | **16.80% (Med 14.30%)** |
 
 Baryonic velocity profiles include gas, stellar disk with $\Upsilon_{\text{disk}} = 0.5$, and central stellar bulge with $\Upsilon_{\text{bul}} = 0.7$.
 
