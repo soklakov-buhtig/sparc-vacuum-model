@@ -114,7 +114,9 @@ render_stats_block("Выборка высокого качества Q=1", quali
 
 
 # --- 5. МАТРИЧНЫЙ ВЫВОД ВСЕХ 6 ГАЛАКТИК ---
-galaxies_list = list(SPARC_DATABASE.keys())
+#galaxies_list = list(SPARC_DATABASE.keys())
+galaxies_list = list(SPARC_DATABASE.keys())[:4]  # Временный лимит на 4 графика
+
 
 for row_idx in range(int(np.ceil(len(galaxies_list) / 2))):
     col1, col2 = st.columns(2)
