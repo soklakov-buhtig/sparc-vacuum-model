@@ -115,7 +115,17 @@ render_stats_block("Статистика по выборке", quality_filter=No
 # 2. Эталонная выборка высокого качества (Q = 1)
 render_stats_block("Выборка высокого качества Q=1", quality_filter=1, show_best_cal=False)
 
-
+@st.cache_data
+def get_cached_cv_stats(_db, lam, alp):
+return evaluate_all_calibrators_distribution(_db, [0.0, lam], alp, get_exact_sparc_data, model_velocity_knudsen, calibrate_vacuum_parameters)
+cv_dist = get_cached_cv_stats(SPARC_DATABASE, lambda_0_fixed, alpha)
+st.markdown("#### 📊 Перекрёстная проверка по всем 175 калибраторам (All-175 Leave-One-In)")
+c1, c2, c3, c4 = st.columns(4)
+c1.metric("Медиана MAPE (25-й квантиль)", f"{cv_dist['med_p25']:.2f}%")
+c2.metric("Медиана MAPE (50-й, центр)", f"{cv_dist['med_p50']:.2f}%")
+c3.metric("Медиана MAPE (75-й квантиль)", f"{cv_dist['med_p75']:.2f}%")
+c4.metric("Среднее MAPE (50-й квантиль)", f"{cv_dist['mean_p50']:.2f}%")
+st.markdown("---")
 
 # --- 5. МАТРИЧНЫЙ ВЫВОД ВСЕХ 6 ГАЛАКТИК ---
 #galaxies_list = list(SPARC_DATABASE.keys())
