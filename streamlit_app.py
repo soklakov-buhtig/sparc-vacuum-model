@@ -142,10 +142,7 @@ for row_idx in range(int(np.ceil(len(galaxies_list) / 2))):
             else:
                 st.markdown(f"### 🌌 {g_name}")
             
-            if is_fully_superfluid:
-                st.info(f"Vacuum is Fully Superfluid | MAPE: {mape:.2f}%")
-            else:
-                st.success(f"Phase Boundary: {R_transition:.2f} kpc | MAPE: {mape:.2f}%")
+            st.info(f"MAPE: {mape:.2f}%")
             
             fig = make_subplots(rows=2, cols=1, shared_xaxes=True, row_heights=[0.65, 0.35], vertical_spacing=0.07, specs=[[{"secondary_y": False}], [{"secondary_y": True}]])
 
