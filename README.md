@@ -95,8 +95,8 @@ This computational study accompanies the theoretical framework on flat-spacetime
 
 ### Publications
 
-[![DOI Preprint II](https://shields.io)](https://doi.org)
-[![DOI Preprint I](https://shields.io)](https://doi.org)
+[![DOI Preprint II](https://shields.io)]([https://doi.org](https://zenodo.org/records/24446954))
+[![DOI Preprint I](https://shields.io)]([https://doi.org](https://doi.org/10.5281/zenodo.23952161))
 
-* **Preprint II (Galactic Scale):** A. V. Soklakov, *Shear-Elastic Rheology of the Non-Fermionic Medium: A Zero-to-One Parameter Explanation of Galactic Rotation Curves Without Dark Matter Halos*, Zenodo (2026), [doi:10.5281/zenodo.24446953]([https://doi.org](https://zenodo.org/records/24446954))
-* **Preprint I (Relativistic Scale):** A. V. Soklakov, *Gauge-Equivalent Optical-Force Representation of the Schwarzschild Metric via Isotropic Vacuum Fluctuations*, Zenodo (2026), [doi:10.5281/zenodo.23952161]([https://doi.org](https://doi.org](https://doi.org/10.5281/zenodo.23952161))
+* **Preprint II (Galactic Scale):** A. V. Soklakov, *Shear-Elastic Rheology of the Non-Fermionic Medium: A Zero-to-One Parameter Explanation of Galactic Rotation Curves Without Dark Matter Halos*, Zenodo (2026), [doi:10.5281/zenodo.24446953]
+* **Preprint I (Relativistic Scale):** A. V. Soklakov, *Gauge-Equivalent Optical-Force Representation of the Schwarzschild Metric via Isotropic Vacuum Fluctuations*, Zenodo (2026), [doi:10.5281/zenodo.23952161]
